@@ -36,7 +36,13 @@ angular.module('angular-halogen', [])
             url = new URITemplate(url).expand(options.data);
           }
 
-          return $http(angular.extend(options || {}, { url: url }));
+          return $http(angular.extend(options || {}, { url: url }))
+            .then(function(resp) {
+              if (resp.headers('Content-Type') === 'application/hal+json') {
+                resp.data = parser.parse(resp.data);
+              }
+              return resp;
+            });
         };
 
         for (var name in embedded) {

@@ -42,7 +42,8 @@ describe('Module: angular-halogen', function () {
 
   it('should follow links and make http requests', function() {
     httpBackend
-      .expectGET('/orders/123').respond('{"type":"promo"}');
+      .expectGET('/orders/123')
+      .respond({_links:{self:{href:'/orders/123'}},type:'promo'},{'Content-Type': 'application/hal+json'});
     var json = '{"_links":{"order":{"href":"/orders/123"}}}';
     var res = ahParser.parse(json);
 
@@ -50,6 +51,7 @@ describe('Module: angular-halogen', function () {
       .$follow('order')
       .then(function(resp) {
         expect(resp.data.type).toBe('promo');
+        expect(resp.data.$link('self').href).toBe('/orders/123');
       });
 
     httpBackend.flush();
