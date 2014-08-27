@@ -55,11 +55,17 @@ angular.module('angular-hyper-resource', [])
           if(link === null) {
             return null; // TODO: Something else to return? Resource w/ rejected promise and error?
           }
+
           return Resource.get(link, options);
         };
 
         this.$follow = function(rel, options) {
-          return this.$followLink(this.$link(rel), options);
+          // This resource may not be resolved yet,
+          // so we follow a *future* link by chaining our
+          // own promise.
+          return this.$followLink(this.$promise.then(function(r) {
+            return r.$link(rel);
+          }), options);
         };
       };
 
@@ -74,16 +80,19 @@ angular.module('angular-hyper-resource', [])
 
       Resource.get = function(link, options) {
         var res = new Resource();
-        var url = link.href;
-
-        if (link.templated) {
-          url = new URITemplate(url).expand(options.data);
-        }
-
-        var httpConfig = angular.extend(options || {}, { url: url });
 
         res.$promise =
-          $http(httpConfig)
+          $q.when(link)
+          .then(function(l) {
+            var url = l.href;
+    
+            if (l.templated) {
+              url = new URITemplate(url).expand(options.data);
+            }
+
+            var httpConfig = angular.extend(options || {}, { url: url });
+            return $http(httpConfig);
+          })
           .then(function(response) {
             res.$$resolve(response.data, response.headers);
             return res;

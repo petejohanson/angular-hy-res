@@ -229,5 +229,49 @@ describe('Module: angular-hyper-resource', function () {
         });
       });
     });
+    describe('a series of $follows', function() {
+      var profileResource;
+
+      var rawCustomer = {
+        _links: {
+          self: { href: '/customers/321' },
+          profile: { href: '/customers/321/profile' }
+        },
+        name: 'John Wayne'
+      };
+
+      var rawProfile = {
+        _links: {
+          self: { href: '/customers/321/profile' }
+        },
+        location: 'Anytown, USA'
+      };
+
+      beforeEach(function() {
+        httpBackend
+          .expectGET('/customers/321')
+          .respond(rawCustomer,{'Content-Type': 'application/hal+json'});
+        httpBackend
+          .expectGET('/customers/321/profile')
+          .respond(rawProfile,{'Content-Type': 'application/hal+json'});
+
+        profileResource = resource.$follow('customer').$follow('profile');
+        context.resource = profileResource;
+      });
+
+      unresolvedResourceBehavior(context);
+
+      describe('when the chain resolves', function() {
+        beforeEach(function() {
+          httpBackend.flush();
+        });
+
+        resolvedResourceBehavior(context);
+
+        it('should have the profile location', function() {
+          expect(profileResource.location).toBe('Anytown, USA');
+        });
+      });
+    });
   });
 });
