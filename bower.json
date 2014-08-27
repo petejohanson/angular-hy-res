@@ -1,6 +1,10 @@
 {
-  "name": "angular-halogen",
+  "name": "angular-hyper-resource",
   "version": "0.0.1",
+  "main": [
+    "dist/angular-hyper-resource.js",
+    "dist/angular-hyper-resource-hal.js"
+  ],
   "dependencies": {
     "uri.js": "~1.13.2"
   },

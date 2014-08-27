@@ -120,19 +120,20 @@ module.exports = function(grunt) {
         autoWatch: true
       }
     },
-    ngmin: {
+    ngAnnotate: {
       options: {
-        banner: '<%= meta.banner %>'
+        singleQuotes: true
       },
       dist: {
-        src: ['<%= yo.src %>/<%= pkg.name %>.js'],
-        dest: '<%= yo.dist %>/<%= pkg.name %>.js'
+        files: [
+          {
+            expand: true,
+            cwd: '<%= yo.src %>',
+            src: ['*.js'],
+            dest: '<%= yo.dist %>/',
+          }
+        ]
       }
-      // dist: {
-      //   files: {
-      //     '/.js': '/.js'
-      //   }
-      // }
     },
     concat: {
       options: {
@@ -140,8 +141,11 @@ module.exports = function(grunt) {
         stripBanners: true
       },
       dist: {
-        src: ['<%= yo.src %>/<%= pkg.name %>.js'],
-        dest: '<%= yo.dist %>/<%= pkg.name %>.js'
+        src: [
+          '<%= yo.dist %>/<%= pkg.name %>.js',
+          '<%= yo.dist %>/<%= pkg.name %>-hal.js',
+        ],
+        dest: '<%= yo.dist %>/<%= pkg.name %>-full.js'
       }
     },
     uglify: {
@@ -149,8 +153,19 @@ module.exports = function(grunt) {
         banner: '<%= meta.banner %>'
       },
       dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: '<%= yo.dist %>/<%= pkg.name %>.min.js'
+        files: [
+          {
+            src: '<%= concat.dist.dest %>',
+            dest: '<%= yo.dist %>/<%= pkg.name %>-full.min.js'
+          },
+          {
+            expand: true,
+            cwd: '<%= yo.dist %>',
+            src: ['<%= pkg.name %>.js', '<%= pkg.name %>-hal.js'],
+            dest: '<%= yo.dist %>',
+            ext: '.min.js'
+          }
+        ]
       }
     }
   });
@@ -162,7 +177,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'ngmin:dist',
+    'ngAnnotate:dist',
+    'concat:dist',
     'uglify:dist'
   ]);
 
