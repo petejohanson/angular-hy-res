@@ -51,12 +51,15 @@ angular.module('angular-hyper-resource', [])
           return this.$$embedded[rel];
         };
 
-        this.$follow = function(rel, options) {
-          var link = this.$link(rel);
+        this.$followLink = function(link, options) {
           if(link === null) {
             return null; // TODO: Something else to return? Resource w/ rejected promise and error?
           }
           return Resource.get(link, options);
+        };
+
+        this.$follow = function(rel, options) {
+          return this.$followLink(this.$link(rel), options);
         };
       };
 

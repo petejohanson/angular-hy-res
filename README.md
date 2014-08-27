@@ -1,6 +1,6 @@
 # angular-hyper-resource [![Build Status](https://travis-ci.org/petejohanson/angular-hyper-resource.svg?branch=master)](https://travis-ci.org/petejohanson/angular-hyper-resource)
 
-A hypermedia client/library for [AngularJS](http://angularjs.org/) that consumes the [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06) media type.
+A hypermedia client/library for [AngularJS](http://angularjs.org/). A [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06) media type extension is included by default, but support for other media types can be added.
 
 ## Installation
 
@@ -32,6 +32,7 @@ _(Coming soon)_
 
 ## To Do
 
+* Handling of arrays of links for a given rel.
 * HTTP Link header extension
 * Extensions for other media types (e.g. Siren, Uber)
 * Hypermedia Actions? (Not present in HAL)

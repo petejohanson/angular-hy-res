@@ -129,7 +129,7 @@ describe('Module: angular-hyper-resource', function () {
         });
       });
 
-      describe('following a link', function() {
+      describe('following a link relation', function() {
         var raw = {
           _links: {
             self: { href: '/customers/321' }
@@ -162,7 +162,41 @@ describe('Module: angular-hyper-resource', function () {
         });
       });
 
-      describe('following a templated link', function() {
+      describe('following a link object', function() {
+        var raw = {
+          _links: {
+            self: { href: '/customers/321' }
+          },
+          name: 'John Wayne'
+        };
+
+        var customerResource;
+
+        beforeEach(function() {
+          httpBackend
+            .expectGET('/customers/321')
+            .respond(raw,{'Content-Type': 'application/hal+json'});
+          var link = resource.$link('customer');
+          customerResource = resource.$followLink(link);
+          context.resource = customerResource;
+        });
+
+        unresolvedResourceBehavior(context);
+        
+        describe('and then resolved', function() {
+          beforeEach(function() {
+            httpBackend.flush();
+          });
+        
+          resolvedResourceBehavior(context);
+        
+          it('should have the raw properties', function() {
+            expect(customerResource.name).toBe('John Wayne');
+          });
+        });
+      });
+
+      describe('following a templated link relation', function() {
         var raw = {
           _links: {
             self: { href: '/customers/666' }
