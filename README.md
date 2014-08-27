@@ -1,8 +1,6 @@
-# angular-hyper-resource
+# angular-hyper-resource [![Build Status](https://travis-ci.org/petejohanson/angular-hyper-resource.svg?branch=master)](https://travis-ci.org/petejohanson/angular-hyper-resource)
 
 A hypermedia client/library for [AngularJS](http://angularjs.org/) that consumes the [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06) media type.
-
-[![Build Status](https://travis-ci.org/petejohanson/angular-hyper-resource.svg?branch=master)](https://travis-ci.org/petejohanson/angular-hyper-resource)
 
 ## Installation
 
