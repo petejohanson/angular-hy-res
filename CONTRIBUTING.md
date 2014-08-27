@@ -7,7 +7,10 @@ Please don't edit files in the `dist` subdirectory as they are generated via Gru
 Regarding code style like indentation and whitespace, **follow the conventions you see used in the source already.**
 
 ### PhantomJS
-While Grunt can run the included unit tests via [PhantomJS](http://phantomjs.org/), this shouldn't be considered a substitute for the real thing. Please be sure to test the `test/*.html` unit test file(s) in _actual_ browsers.
+While Grunt can run the included unit tests via [PhantomJS](http://phantomjs.org/), this shouldn't be considered a substitute for the real thing. Please be sure to test the unit test file(s) in _actual_ browsers. Test using [Karma](http://karma-runner.github.io/0.12/index.html) with the following steps:
+
+* `$ karma start karma.conf.js`
+* Load the karma server URL [http://localhost:9876/](http://localhost:9876/) in your browser.
 
 ## Modifying the code
 First, ensure that you have the latest [Node.js](http://nodejs.org/) and [npm](http://npmjs.org/) installed.
