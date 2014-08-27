@@ -1,6 +1,6 @@
 # angular-hyper-resource
 
-A hypermedia client/library for [AngularJS][http://angularjs.org/] that consumes the [HAL][http://tools.ietf.org/html/draft-kelly-json-hal-06] media type.
+A hypermedia client/library for [AngularJS](http://angularjs.org/) that consumes the [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06) media type.
 
 ## Installation
 
