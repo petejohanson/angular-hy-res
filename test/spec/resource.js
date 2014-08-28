@@ -81,9 +81,9 @@ describe('Module: angular-hy-res', function () {
             }
           },
           'shipping-address': {
-	    street1: '123 Wilkes Lane',
+            street1: '123 Wilkes Lane',
             _links: {
-	      self: { href: '/address/1234' }
+              self: { href: '/address/1234' }
             }
           }
         }
@@ -179,9 +179,9 @@ describe('Module: angular-hy-res', function () {
 
         resolvedResourceBehavior(context);
 
-	it ('should have the embedded resource properties', function() {
-	  expect(shippingResource.street1).toBe('123 Wilkes Lane');
-	});
+        it ('should have the embedded resource properties', function() {
+          expect(shippingResource.street1).toBe('123 Wilkes Lane');
+        });
       });
 
       describe('following a link object', function() {
