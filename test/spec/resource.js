@@ -70,13 +70,20 @@ describe('Module: angular-hy-res', function () {
         _links:{
           self: { href: '/orders/123'},
           customer: { href: '/customers/321' },
-          'customer-search': { href: '/customers/{id}', templated: true }
+          'customer-search': { href: '/customers/{id}', templated: true },
+          'shipping-address': { href: '/address/1234' }
         },
         _embedded: {
           payment: {
             amount: '$10.50',
             _links: {
               self: { href: '/orders/123/payment' }
+            }
+          },
+          'shipping-address': {
+	    street1: '123 Wilkes Lane',
+            _links: {
+	      self: { href: '/address/1234' }
             }
           }
         }
@@ -160,6 +167,21 @@ describe('Module: angular-hy-res', function () {
             expect(customerResource.name).toBe('John Wayne');
           });
         });
+      });
+
+      describe('following a link relation when embedded present', function() {
+        var shippingResource;
+
+        beforeEach(function() {
+          shippingResource = resource.$follow('shipping-address');
+          context.resource = shippingResource;
+        });
+
+        resolvedResourceBehavior(context);
+
+	it ('should have the embedded resource properties', function() {
+	  expect(shippingResource.street1).toBe('123 Wilkes Lane');
+	});
       });
 
       describe('following a link object', function() {

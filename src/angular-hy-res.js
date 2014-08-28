@@ -60,6 +60,14 @@ angular.module('angular-hy-res', [])
         };
 
         this.$follow = function(rel, options) {
+	  // TODO: Make follow for embedded work when
+	  // called on unresolved resources.
+	  var res = this.$embedded(rel);
+
+	  if (res !== null) {
+	    return res;
+	  }
+
           // This resource may not be resolved yet,
           // so we follow a *future* link by chaining our
           // own promise.
