@@ -1,13 +1,13 @@
 /**
- * angular-hyper-resource
- * @version v0.0.1 - 2014-08-27
- * @link https://github.com/petejohanson/angular-hyper-resource
+ * angular-hy-res
+ * @version v0.0.1 - 2014-08-28
+ * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <latexer@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
 'use strict';
 
-angular.module('angular-hyper-resource', [])
+angular.module('angular-hy-res', [])
   .factory('URITemplate', ['$window', function($window) {
     return $window.URITemplate;
   }])
@@ -124,7 +124,7 @@ angular.module('angular-hyper-resource', [])
 
 'use strict';
 
-angular.module('angular-hyper-resource-hal', ['angular-hyper-resource'])
+angular.module('angular-hy-res-hal', ['angular-hy-res'])
   .service('hrHalExtension', function() {
     this.applies = function(data, headers) {
       return headers('Content-Type') === 'application/hal+json';

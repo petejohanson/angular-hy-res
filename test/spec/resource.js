@@ -47,12 +47,12 @@ function resolvedResourceBehavior(context) {
   });
 }
 
-describe('Module: angular-hyper-resource', function () {
+describe('Module: angular-hy-res', function () {
   var hrResource, httpBackend, rootScope;
 
   // load the controller's module
-  beforeEach(module('angular-hyper-resource'));
-  beforeEach(module('angular-hyper-resource-hal'));
+  beforeEach(module('angular-hy-res'));
+  beforeEach(module('angular-hy-res-hal'));
 
   beforeEach(inject(function(_hrResource_, $httpBackend, $rootScope) {
     hrResource = _hrResource_;

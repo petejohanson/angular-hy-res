@@ -1,4 +1,4 @@
-# angular-hyper-resource [![Build Status](https://travis-ci.org/petejohanson/angular-hyper-resource.svg?branch=master)](https://travis-ci.org/petejohanson/angular-hyper-resource)
+# angular-hy-res [![Build Status](https://travis-ci.org/petejohanson/angular-hy-res.svg?branch=master)](https://travis-ci.org/petejohanson/angular-hy-res)
 
 A hypermedia client/library for [AngularJS](http://angularjs.org/). A [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06) media type extension is included by default, but support for other media types can be added.
 
@@ -6,22 +6,22 @@ A hypermedia client/library for [AngularJS](http://angularjs.org/). A [HAL](http
 
 ### Bower
 
-angular-hyper-resource is available via Bower. To install:
+angular-hy-res is available via Bower. To install:
 
-    $ bower install --save angular-hyper-resource
+    $ bower install --save angular-hy-res
 
 ### Manual
 
 Download the [production version][min] or the [development version][max].
 
-[min]: https://raw.github.com/petejohanson/angular-hyper-resource/master/dist/angular-hyper-resource-full.min.js
-[max]: https://raw.github.com/petejohanson/angular-hyper-resource/master/dist/angular-hyper-resource-full.js
+[min]: https://raw.github.com/petejohanson/angular-hy-res/master/dist/angular-hy-res-full.min.js
+[max]: https://raw.github.com/petejohanson/angular-hy-res/master/dist/angular-hy-res-full.js
 
 In your web page:
 
 ```html
 <script src="angular.js"></script>
-<script src="dist/angular-hyper-resource-full.min.js"></script>
+<script src="dist/angular-hy-res-full.min.js"></script>
 ```
 
 ## Documentation

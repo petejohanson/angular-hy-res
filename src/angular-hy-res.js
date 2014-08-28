@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angular-hyper-resource', [])
+angular.module('angular-hy-res', [])
   .factory('URITemplate', ['$window', function($window) {
     return $window.URITemplate;
   }])

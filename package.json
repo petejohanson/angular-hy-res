@@ -1,12 +1,12 @@
 {
-  "name": "angular-hyper-resource",
+  "name": "angular-hy-res",
   "version": "0.0.1",
-  "description": "angular-hyper-resource",
+  "description": "angular-hy-res",
   "keywords": [
     "angular"
   ],
-  "homepage": "https://github.com/petejohanson/angular-hyper-resource",
-  "bugs": "https://github.com/petejohanson/angular-hyper-resource/issues",
+  "homepage": "https://github.com/petejohanson/angular-hy-res",
+  "bugs": "https://github.com/petejohanson/angular-hy-res/issues",
   "author": {
     "name": "Pete Johanson",
     "email": "latexer@gmail.com",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/petejohanson/angular-hyper-resource.git"
+    "url": "https://github.com/petejohanson/angular-hy-res.git"
   },
   "licenses": [
     {

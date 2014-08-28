@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angular-hyper-resource-hal', ['angular-hyper-resource'])
+angular.module('angular-hy-res-hal', ['angular-hy-res'])
   .service('hrHalExtension', function() {
     this.applies = function(data, headers) {
       return headers('Content-Type') === 'application/hal+json';

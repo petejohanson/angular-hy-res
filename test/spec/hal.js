@@ -1,10 +1,10 @@
 'use strict';
 
-describe('angular-hyper-resource: hrHalExtension', function () {
+describe('angular-hy-res: hrHalExtension', function () {
   var hrHalExtension;
 
   // load the controller's module
-  beforeEach(module('angular-hyper-resource-hal'));
+  beforeEach(module('angular-hy-res-hal'));
 
   beforeEach(inject(function(_hrHalExtension_) {
     hrHalExtension = _hrHalExtension_;
