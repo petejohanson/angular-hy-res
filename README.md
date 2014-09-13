@@ -236,11 +236,12 @@ And the view:
 
 ## To Do
 
-* Handling of arrays of links for a given rel.
 * HTTP Link header extension
 * Extensions for other media types (e.g. Siren, Uber)
 * Hypermedia Actions/Forms? (Not present in HAL)
+* Handle following a link relation that will be an array once the given resource resolves.
 * Allow configuration of custom media types to be processed by HAL extension
+* Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Correct relative URI resolution for following links.
 * Sane error handling
