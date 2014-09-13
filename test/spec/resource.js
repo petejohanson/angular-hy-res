@@ -71,7 +71,11 @@ describe('Module: angular-hy-res', function () {
           self: { href: '/orders/123'},
           customer: { href: '/customers/321' },
           'customer-search': { href: '/customers/{id}', templated: true },
-          'shipping-address': { href: '/address/1234' }
+          'shipping-address': { href: '/address/1234' },
+          stores: [
+            { href: '/stores/123' },
+            { href: '/stores/456' }
+          ]
         },
         _embedded: {
           payment: {
@@ -114,63 +118,75 @@ describe('Module: angular-hy-res', function () {
     unresolvedResourceBehavior(context);
 
     describe('a resolved resource', function() {
-      beforeEach(function() {
+      beforeEach(function () {
         httpBackend.flush();
       });
 
       resolvedResourceBehavior(context);
 
-      it('should contain the parsed properties', function() {
+      it('should contain the parsed properties', function () {
         expect(resource.type).toBe('promo');
       });
 
-      it('should have the self link', function() {
+      it('should have the self link', function () {
         expect(resource.$link('self')).toEqual({ href: '/orders/123' });
       });
 
-      it('should have other link be null', function() {
+      it('should have other link be null', function () {
         expect(resource.$link('blah')).toBe(null);
       });
 
-      describe('embedded resources', function() {
+      describe('embedded resources', function () {
         var payment;
-        beforeEach(function() {
+        beforeEach(function () {
           payment = resource.$embedded('payment');
           context.resource = payment;
         });
 
         resolvedResourceBehavior(context);
 
-        it('should not be null', function() {
+        it('should not be null', function () {
           expect(payment).not.toBeNull();
         });
 
-        it('should have the basic properties', function() {
+        it('should have the basic properties', function () {
           expect(payment.amount).toBe('$10.50');
         });
       });
 
-      describe('an array of embedded resources', function() {
+      describe('an array of embedded resources', function () {
         var discounts;
-        beforeEach(function() {
+        beforeEach(function () {
           discounts = resource.$embedded('discounts');
           context.resource = discounts;
         });
 
-        it('should contain two resources', function() {
+        it('should contain two resources', function () {
           expect(discounts.length).toBe(2);
         });
 
-        it('should contain resolved resources', function() {
-          for(var r in discounts) {
+        it('should contain resolved resources', function () {
+          for (var r in discounts) {
             context.resource = r;
             resolvedResourceBehavior(context);
           }
         });
 
+        it('should have a resolved $promise on the array', function (done) {
+          discounts.$promise.then(function (a) {
+            expect(a).toBe(discounts);
+            done();
+          });
+
+          rootScope.$apply();
+        });
+
+        it('should have a true $resolved property', function () {
+          expect(discounts.$resolved).toBe(true);
+        });
       });
 
-      describe('following a link relation', function() {
+      describe('following a link relation', function () {
         var raw = {
           _links: {
             self: { href: '/customers/321' }
@@ -180,25 +196,73 @@ describe('Module: angular-hy-res', function () {
 
         var customerResource;
 
-        beforeEach(function() {
+        beforeEach(function () {
           httpBackend
             .expectGET('/customers/321')
-            .respond(raw,{'Content-Type': 'application/hal+json'});
+            .respond(raw, {'Content-Type': 'application/hal+json'});
           customerResource = resource.$follow('customer');
           context.resource = customerResource;
         });
 
         unresolvedResourceBehavior(context);
-        
-        describe('and then resolved', function() {
+
+        describe('and then resolved', function () {
+          beforeEach(function () {
+            httpBackend.flush();
+          });
+
+          resolvedResourceBehavior(context);
+
+          it('should have the raw properties', function () {
+            expect(customerResource.name).toBe('John Wayne');
+          });
+        });
+      });
+
+      describe('following an link relation that is an array', function () {
+        var stores;
+        beforeEach(function() {
+          var rawStore = {};
+          httpBackend
+            .expectGET('/stores/123')
+            .respond(rawStore, {'Content-Type': 'application/hal+json'});
+          httpBackend
+            .expectGET('/stores/456')
+            .respond(rawStore, {'Content-Type': 'application/hal+json'});
+          stores = resource.$follow('stores');
+        });
+
+        it('has a false $resolved', function() {
+          expect(stores.$resolved).toBe(false);
+        });
+
+        it('has a length of 2', function() {
+          expect(stores.length).toBe(2);
+        });
+
+        it('is an array of unresolved resources', function() {
+          for (var s in stores) {
+            context.resource = s;
+            unresolvedResourceBehavior(context);
+          }
+        });
+
+        describe('when the background requests complete', function() {
           beforeEach(function() {
             httpBackend.flush();
           });
-        
-          resolvedResourceBehavior(context);
-        
-          it('should have the raw properties', function() {
-            expect(customerResource.name).toBe('John Wayne');
+
+          it('has a true $resolved property', function() {
+            expect(stores.$resolved).toBe(true);
+          });
+
+          it('has a $promise that returns the array that completes', function(done) {
+            stores.$promise.then(function(s) {
+              expect(s).toEqual(stores);
+              done();
+            });
+
+            rootScope.$apply();
           });
         });
       });

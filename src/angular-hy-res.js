@@ -29,7 +29,11 @@ angular.module('angular-hy-res', [])
             angular.extend(this.$$links, e.linkParser(data, headers));
             angular.forEach(e.embeddedParser(data, headers), function(raw, rel) {
               if (angular.isArray(raw)) {
-                this.$$embedded[rel] = raw.map(function(e) { return Resource.embedded(e, headers); });
+                var embeds = raw.map(function(e) { return Resource.embedded(e, headers); });
+
+                embeds.$promise = $q.when(embeds);
+                embeds.$resolved = true;
+                this.$$embedded[rel] = embeds;
               } else {
                 this.$$embedded[rel] = Resource.embedded(raw, headers);
               }
@@ -60,6 +64,15 @@ angular.module('angular-hy-res', [])
             return null; // TODO: Something else to return? Resource w/ rejected promise and error?
           }
 
+          if (angular.isArray(link)) {
+            var res = link.map(function(l) { return Resource.get(l, options); });
+            res.$promise = $q.all(res.map(function(r) { return r.$promise; }));
+            res.$resolved = false;
+            res.$promise.then(function(r) { res.$resolved = true });
+
+            return res;
+          }
+
           return Resource.get(link, options);
         };
 
@@ -70,6 +83,10 @@ angular.module('angular-hy-res', [])
 
           if (res !== null) {
             return res;
+          }
+
+          if (this.$resolved) {
+            return this.$followLink(this.$link(rel), options);
           }
 
           // This resource may not be resolved yet,
