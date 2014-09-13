@@ -68,7 +68,7 @@ angular.module('angular-hy-res', [])
             var res = link.map(function(l) { return Resource.get(l, options); });
             res.$promise = $q.all(res.map(function(r) { return r.$promise; }));
             res.$resolved = false;
-            res.$promise.then(function(r) { res.$resolved = true });
+            res.$promise.then(function(r) { res.$resolved = true; });
 
             return res;
           }
