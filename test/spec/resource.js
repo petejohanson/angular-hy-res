@@ -85,7 +85,21 @@ describe('Module: angular-hy-res', function () {
             _links: {
               self: { href: '/address/1234' }
             }
-          }
+          },
+          discounts: [
+            {
+              name: 'New User Discount',
+              _links: {
+                self: { href: '/discounts/123' }
+              }
+            },
+            {
+              name: 'SPRING20 Coupon Code',
+              _links: {
+                self: { href: '/discounts/321' }
+              }
+            }
+          ]
         }
       };
 
@@ -134,6 +148,26 @@ describe('Module: angular-hy-res', function () {
         it('should have the basic properties', function() {
           expect(payment.amount).toBe('$10.50');
         });
+      });
+
+      describe('an array of embedded resources', function() {
+        var discounts;
+        beforeEach(function() {
+          discounts = resource.$embedded('discounts');
+          context.resource = discounts;
+        });
+
+        it('should contain two resources', function() {
+          expect(discounts.length).toBe(2);
+        });
+
+        it('should contain resolved resources', function() {
+          for(var r in discounts) {
+            context.resource = r;
+            resolvedResourceBehavior(context);
+          }
+        });
+
       });
 
       describe('following a link relation', function() {

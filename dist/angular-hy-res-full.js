@@ -1,6 +1,6 @@
 /**
  * angular-hy-res
- * @version v0.0.1 - 2014-08-28
+ * @version v0.0.1 - 2014-09-12
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <latexer@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -35,7 +35,11 @@ angular.module('angular-hy-res', [])
 
             angular.extend(this.$$links, e.linkParser(data, headers));
             angular.forEach(e.embeddedParser(data, headers), function(raw, rel) {
-              this.$$embedded[rel] = Resource.embedded(raw, headers);
+              if (angular.isArray(raw)) {
+                this.$$embedded[rel] = raw.map(function(e) { return Resource.embedded(e, headers); });
+              } else {
+                this.$$embedded[rel] = Resource.embedded(raw, headers);
+              }
             }, this);
           }, this);
 
