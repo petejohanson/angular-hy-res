@@ -37,6 +37,12 @@ module.exports = function(grunt) {
         path: 'http://localhost:<%= connect.options.port %>'
       }
     },
+    bump: {
+      options: {
+        commitFiles: ['package.json', 'bower.json'],
+        pushTo: 'origin'
+      }
+    },
     clean: {
       dist: {
         files: [{
@@ -130,7 +136,7 @@ module.exports = function(grunt) {
             expand: true,
             cwd: '<%= yo.src %>',
             src: ['*.js'],
-            dest: '<%= yo.dist %>/',
+            dest: '<%= yo.dist %>/'
           }
         ]
       }
@@ -143,7 +149,7 @@ module.exports = function(grunt) {
       dist: {
         src: [
           '<%= yo.dist %>/<%= pkg.name %>.js',
-          '<%= yo.dist %>/<%= pkg.name %>-hal.js',
+          '<%= yo.dist %>/<%= pkg.name %>-hal.js'
         ],
         dest: '<%= yo.dist %>/<%= pkg.name %>-full.js'
       }
@@ -185,7 +191,7 @@ module.exports = function(grunt) {
   grunt.registerTask('release', [
     'test',
     'bump-only',
-    'dist',
+    'build',
     'bump-commit'
   ]);
 

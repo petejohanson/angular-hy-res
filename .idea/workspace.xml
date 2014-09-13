@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="02f47c66-190e-4a3f-a969-b96b85f0f89d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+    <list default="true" id="02f47c66-190e-4a3f-a969-b96b85f0f89d" name="Default" comment="Packaging tweaks.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gruntfile.js" afterPath="$PROJECT_DIR$/Gruntfile.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="angular-hy-res.iws" />
@@ -36,14 +37,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="README.md" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider editor-type-id="MarkdownPreviewEditor">
             <state />
           </provider>
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.18490566" vertical-offset="4199" max-vertical-offset="4554">
-              <caret line="236" column="8" selection-start-line="236" selection-start-column="8" selection-end-line="236" selection-end-column="8" />
+            <state vertical-scroll-proportion="-5.25" vertical-offset="4008" max-vertical-offset="4554">
+              <caret line="232" column="7" selection-start-line="232" selection-start-column="7" selection-end-line="232" selection-end-column="7" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bower.json" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/bower.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.2506964" vertical-offset="0" max-vertical-offset="396">
+              <caret line="5" column="32" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -66,10 +77,11 @@
         <option value="$PROJECT_DIR$/dgeni-docs.js" />
         <option value="$PROJECT_DIR$/docs/dgeni-docs.js" />
         <option value="$PROJECT_DIR$/docs/templates/common.template.html" />
-        <option value="$PROJECT_DIR$/Gruntfile.js" />
         <option value="$PROJECT_DIR$/test/spec/resource.js" />
         <option value="$PROJECT_DIR$/src/angular-hy-res.js" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/Gruntfile.js" />
       </list>
     </option>
   </component>
@@ -111,21 +123,6 @@
             </targets>
           </GruntMultiTaskState>
           <GruntMultiTaskState>
-            <name>docs</name>
-          </GruntMultiTaskState>
-          <GruntMultiTaskState>
-            <name>docular</name>
-          </GruntMultiTaskState>
-          <GruntMultiTaskState>
-            <name>docularserver</name>
-          </GruntMultiTaskState>
-          <GruntMultiTaskState>
-            <name>http-server</name>
-            <targets>
-              <target value="docs" />
-            </targets>
-          </GruntMultiTaskState>
-          <GruntMultiTaskState>
             <name>jshint</name>
             <targets>
               <target value="gruntfile" />
@@ -151,9 +148,6 @@
             <targets>
               <target value="dist" />
             </targets>
-          </GruntMultiTaskState>
-          <GruntMultiTaskState>
-            <name>ngdocs</name>
           </GruntMultiTaskState>
           <GruntMultiTaskState>
             <name>open</name>
@@ -215,7 +209,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -250,13 +243,14 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="FullScreen" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="SearchEverywhereHistoryKey" value="readm&#9;FILE&#9;file:///home/peter/git/angular-hy-res/README.md&#10;grunt&#9;ACTION&#9;ActivateGruntToolWindow&#10;runt&#9;ACTION&#9;ActivateGruntToolWindow&#10;gru&#9;ACTION&#9;ActivateGruntToolWindow&#10;resou&#9;FILE&#9;file:///home/peter/git/angular-hy-res/test/spec/resource.js&#10;ackage&#9;FILE&#9;file:///home/peter/git/angular-hy-res/package.json&#10;package.j&#9;FILE&#9;file:///home/peter/git/angular-hy-res/package.json&#10;gruntfile.js&#9;FILE&#9;file:///home/peter/git/angular-hy-res/Gruntfile.js&#10;resource&#9;FILE&#9;file:///home/peter/git/angular-hy-res/test/spec/resource.js&#10;angular-hy-res.js&#9;FILE&#9;file:///home/peter/git/angular-hy-res/src/angular-hy-res.js" />
+    <property name="SearchEverywhereHistoryKey" value="pack&#9;FILE&#9;file:///home/peter/git/angular-hy-res/package.json&#10;bower&#9;FILE&#9;file:///home/peter/git/angular-hy-res/bower.json&#10;grunt&#9;ACTION&#9;ActivateGruntToolWindow&#10;readm&#9;FILE&#9;file:///home/peter/git/angular-hy-res/README.md&#10;runt&#9;ACTION&#9;ActivateGruntToolWindow&#10;gru&#9;ACTION&#9;ActivateGruntToolWindow&#10;resou&#9;FILE&#9;file:///home/peter/git/angular-hy-res/test/spec/resource.js&#10;ackage&#9;FILE&#9;file:///home/peter/git/angular-hy-res/package.json&#10;package.j&#9;FILE&#9;file:///home/peter/git/angular-hy-res/package.json&#10;gruntfile.js&#9;FILE&#9;file:///home/peter/git/angular-hy-res/Gruntfile.js&#10;resource&#9;FILE&#9;file:///home/peter/git/angular-hy-res/test/spec/resource.js&#10;angular-hy-res.js&#9;FILE&#9;file:///home/peter/git/angular-hy-res/src/angular-hy-res.js" />
     <property name="options.lastSelected" value="preferences.pluginManager" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
@@ -364,14 +358,14 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24597365" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32852563" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852563" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44871795" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.48397437" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4503205" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Grunt" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4503205" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -400,12 +394,32 @@
     <MESSAGE value="Proper handling of arrays of embedded resources." />
     <MESSAGE value="Handle following a link relation with array cardinality." />
     <MESSAGE value="Fix JSHint error." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix JSHint error." />
+    <MESSAGE value="Packaging tweaks." />
+    <option name="LAST_COMMIT_MESSAGE" value="Packaging tweaks." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/angular-hy-res.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2718">
+          <caret line="72" column="23" selection-start-line="72" selection-start-column="23" selection-end-line="72" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4554">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/angular-hy-res.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="946" max-vertical-offset="2592">
@@ -549,24 +563,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.1197772" vertical-offset="372" max-vertical-offset="936">
-          <caret line="43" column="38" selection-start-line="43" selection-start-column="38" selection-end-line="43" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/karma.conf.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.42424244" vertical-offset="864" max-vertical-offset="1368">
           <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Gruntfile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7548387" vertical-offset="3096" max-vertical-offset="3600">
-          <caret line="185" column="7" selection-start-line="185" selection-start-column="7" selection-end-line="185" selection-end-column="7" />
         </state>
       </provider>
     </entry>
@@ -591,8 +591,32 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18490566" vertical-offset="4199" max-vertical-offset="4554">
-          <caret line="236" column="8" selection-start-line="236" selection-start-column="8" selection-end-line="236" selection-end-column="8" />
+        <state vertical-scroll-proportion="-5.25" vertical-offset="4008" max-vertical-offset="4554">
+          <caret line="232" column="7" selection-start-line="232" selection-start-column="7" selection-end-line="232" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34351146" vertical-offset="0" max-vertical-offset="900">
+          <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Gruntfile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3316062" vertical-offset="2590" max-vertical-offset="3708">
+          <caret line="151" column="49" selection-start-line="151" selection-start-column="49" selection-end-line="151" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/bower.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2506964" vertical-offset="0" max-vertical-offset="396">
+          <caret line="5" column="32" selection-start-line="5" selection-start-column="32" selection-end-line="5" selection-end-column="32" />
           <folding />
         </state>
       </provider>

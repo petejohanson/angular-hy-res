@@ -1,9 +1,9 @@
 {
   "name": "angular-hy-res",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "angular-hy-res",
   "keywords": [
-    "angular"
+    "angular", "hypermedia"
   ],
   "homepage": "https://github.com/petejohanson/angular-hy-res",
   "bugs": "https://github.com/petejohanson/angular-hy-res/issues",
