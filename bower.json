@@ -1,15 +1,16 @@
 {
   "name": "angular-hy-res",
   "version": "0.0.3",
+  "keywords": [ "angular", "hypermedia", "hal" ],
   "main": [
     "dist/angular-hy-res.js",
     "dist/angular-hy-res-hal.js"
   ],
   "dependencies": {
-    "uri.js": "~1.13.2"
+    "uri.js": "~1.13.2",
+    "angular": "latest"
   },
   "devDependencies": {
-    "angular": "latest",
     "angular-mocks": "latest",
     "jquery": "latest"
   }
