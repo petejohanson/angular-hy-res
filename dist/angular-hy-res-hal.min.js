@@ -1,6 +1,6 @@
 /**
  * angular-hy-res
- * @version v0.0.1 - 2014-09-13
+ * @version v0.0.2 - 2014-09-13
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <latexer@gmail.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT

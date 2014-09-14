@@ -1,6 +1,6 @@
 {
   "name": "angular-hy-res",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": [
     "dist/angular-hy-res.js",
     "dist/angular-hy-res-hal.js"
