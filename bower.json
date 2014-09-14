@@ -6,6 +6,7 @@
     "dist/angular-hy-res.js",
     "dist/angular-hy-res-hal.js"
   ],
+  "ignore": [],
   "dependencies": {
     "uri.js": "~1.13.2",
     "angular": "latest"
