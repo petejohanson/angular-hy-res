@@ -16,7 +16,7 @@ var gulp = require('gulp'),
   rename = require('gulp-rename'),
   uglify = require('gulp-uglify'),
   util = require('gulp-util'),
-  clean = require('gulp-clean');
+  del = require('del');
 
 var banner = ['/**',
   ' * <%= pkg.name %> - <%= pkg.description %>',
@@ -61,9 +61,8 @@ gulp.task('js-full', ['jshint'], function () {
     .pipe(getOutputPipe(require('./package.json'))());
 });
 
-gulp.task('clean', function() {
-  return gulp.src('dist/*')
-    .pipe(clean({ read: false }));
+gulp.task('clean', function(cb) {
+  del('dist/**', cb);
 });
 
 gulp.task('build', function() {
