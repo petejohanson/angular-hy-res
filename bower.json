@@ -1,7 +1,11 @@
 {
   "name": "angular-hy-res",
   "version": "0.0.5",
-  "keywords": [ "angular", "hypermedia", "hal" ],
+  "keywords": [
+    "angular",
+    "hypermedia",
+    "hal"
+  ],
   "main": [
     "dist/angular-hy-res.js",
     "dist/angular-hy-res-hal.js"

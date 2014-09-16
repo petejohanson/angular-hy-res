@@ -1,12 +1,12 @@
 'use strict';
 
 angular.module('angular-hy-res', [])
-  .factory('URITemplate', ['$window', function($window) {
+  .factory('URITemplate', function($window) {
     return $window.URITemplate;
-  }])
+  })
   .provider('hrResource', function() {
     this.extensions = [];
-    this.$get = ['$http', '$q', 'URITemplate', '$injector', function($http, $q, URITemplate, $injector) {
+    this.$get = function($http, $q, URITemplate, $injector) {
       var exts = [];
       angular.forEach(this.extensions, function(e) {
         exts.push($injector.get(e));
@@ -141,5 +141,5 @@ angular.module('angular-hy-res', [])
       };
 
       return hrResourceFactory;
-    }];
+    };
   });
