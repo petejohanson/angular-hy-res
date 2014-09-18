@@ -8,7 +8,8 @@
   ],
   "main": [
     "dist/angular-hy-res.js",
-    "dist/angular-hy-res-hal.js"
+    "dist/angular-hy-res-hal.js",
+    "dist/angular-hy-res-link-header.js"
   ],
   "ignore": [],
   "dependencies": {
