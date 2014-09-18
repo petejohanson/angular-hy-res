@@ -11,6 +11,8 @@ var gulp = require('gulp'),
   concat = require('gulp-concat'),
   header = require('gulp-header'),
   ngAnnotate = require('gulp-ng-annotate'),
+  gwebpack = require('gulp-webpack'),
+  webpack = require('webpack'),
   jshint = require('gulp-jshint'),
   karma = require('gulp-karma'),
   rename = require('gulp-rename'),
@@ -28,14 +30,21 @@ var banner = ['/**',
   ''].join('\n');
 
 function jsSourcePipe() {
-  return gulp.src('src/**/*.js');
+  return gulp.src('src/**/*.js')
+    /* jshint camelcase: false */
+    .pipe(ngAnnotate({ add: true, single_quotes: true }));
 }
 
 function getOutputPipe(pkg) {
   return lazypipe()
     .pipe(header, banner, { pkg: pkg, now: (util.date(new Date(), 'yyyy-mm-dd')) })
-    /* jshint camelcase: false */
-    .pipe(ngAnnotate, { add: true, single_quotes: true })
+    .pipe(gif, /angular-hy-res-link-header.js/, gwebpack({
+      output: {
+        library: 'hrLinkHeader',
+        filename: './angular-hy-res-link-header.js',
+        libraryTarget: 'var'
+      }
+    }))
     .pipe(gulp.dest, 'dist')
     .pipe(rename, { suffix: '.min' })
     .pipe(uglify, { preserveComments: 'some' })
@@ -49,11 +58,11 @@ function getJSHintPipe(rc) {
     .pipe(jshint.reporter, 'jshint-stylish')
     .pipe(jshint.reporter, 'fail');
 }
-  
+
 gulp.task('js-single', ['jshint'], function () {
   jsSourcePipe()
     .pipe(getOutputPipe(require('./package.json'))());
-});	
+});
 
 gulp.task('js-full', ['jshint'], function () {
   gulp.src('src/**/*.js')

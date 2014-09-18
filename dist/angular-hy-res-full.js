@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.5 - 2014-09-16
+ * @version v0.0.5 - 2014-09-18
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -27,13 +27,45 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
 
 'use strict';
 
+var httpLink = require('http-link');
+
+angular.module('angular-hy-res-link-header', ['angular-hy-res'])
+  .service('hrLinkHeaderExtension', function() {
+    this.applies = function(data, headers) {
+      return headers('Link') !== null;
+//      return !angular.isNull(headers('Link'));
+    };
+
+    this.linkParser = function(data, headers) {
+      var links = httpLink.parse(headers('Link'));
+
+      var ret = {};
+      for(var i = 0; i < links.length; i++) {
+        var l = links[i];
+        ret[l.rel] = l;
+        delete l.rel;
+      }
+      return ret;
+    };
+
+    this.embeddedParser = function(data, headers) {
+      return [];
+    };
+  })
+  .config(['hrResourceProvider', function(hrResourceProvider) {
+    hrResourceProvider.extensions.push('hrLinkHeaderExtension');
+  }]);
+
+
+'use strict';
+
 angular.module('angular-hy-res', [])
-  .factory('URITemplate', ['$window', function($window) {
+  .factory('URITemplate', function($window) {
     return $window.URITemplate;
-  }])
+  })
   .provider('hrResource', function() {
     this.extensions = [];
-    this.$get = ['$http', '$q', 'URITemplate', '$injector', function($http, $q, URITemplate, $injector) {
+    this.$get = function($http, $q, URITemplate, $injector) {
       var exts = [];
       angular.forEach(this.extensions, function(e) {
         exts.push($injector.get(e));
@@ -168,5 +200,5 @@ angular.module('angular-hy-res', [])
       };
 
       return hrResourceFactory;
-    }];
+    };
   });
