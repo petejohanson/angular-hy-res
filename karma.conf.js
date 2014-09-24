@@ -20,7 +20,7 @@ module.exports = function(config) {
       'bower_components/uri.js/src/URI.js',
       'bower_components/uri.js/src/URITemplate.js',
       'src/**/*.js',
-      'test/spec/**/*.js'
+      'test/spec/**/*-tests.js'
     ],
 
 
@@ -33,7 +33,8 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/angular-hy-res-link-header.js': ['webpack']
+      'src/angular-hy-res-link-header.js': ['webpack'],
+      'test/**/*-tests.js': ['webpack']
     },
 
 
@@ -65,20 +66,6 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
-
-    webpack: {
-      cache: true
-    },
-    webpackServer: {
-    },
-//    webpackPort: 1234,
-
-    plugins: [
-      require('karma-webpack'),
-      require('karma-jasmine'),
-      require('karma-phantomjs-launcher'),
-      require('karma-html2js-preprocessor')
-    ]
+    singleRun: false
   });
 };

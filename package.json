@@ -49,7 +49,8 @@
     "webpack": "~1.4.0-beta8",
     "webpack-dev-server": "~1.6.4",
     "karma-webpack": "~1.2.2",
-    "gulp-webpack": "~0.3.0"
+    "gulp-webpack": "~0.3.0",
+    "karma-html-reporter": "~0.2.4"
   },
   "dependencies": {
     "http-link": "~0.3.0"

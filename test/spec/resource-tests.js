@@ -1,61 +1,16 @@
 'use strict';
 
-function unresolvedResourceBehavior(context) {
-  describe('(shared)', function() {
-    beforeEach(function() {
-      this.resource = context.resource;
-    });
-
-    it('should not be $resolved', function() {
-      expect(this.resource.$resolved).toBe(false);
-    });
-  
-    it('should have a $promise', function() {
-      expect(this.resource.$promise).not.toBe(null);
-    });
-
-    it('should not have an $error', function() {
-      expect(this.resource.$error).toBeNull();
-    });
-  });
-}
-
-function resolvedResourceBehavior(context) {
-  describe('(shared)', function() {
-    beforeEach(function() {
-      this.resource = context.resource;
-      this.rootScope = context.rootScope;
-    });
-
-    it('should be $resolved', function() {
-      expect(this.resource.$resolved).toBe(true);
-    });
-  
-    it('should not have an $error', function() {
-      expect(this.resource.$error).toBe(null);
-    });
-
-    it('should have a completed promise', function(done) {
-      var res = this.resource;
-      this.resource.$promise.then(function(r) {
-        expect(res).toBe(r);
-        done();
-      });
-
-      this.rootScope.$digest();
-    });
-  });
-}
+var resourceAssertions = require('./resource-assertions');
 
 describe('Module: angular-hy-res', function () {
   var hrResource, httpBackend, rootScope;
 
   // load the controller's module
-  beforeEach(module('angular-hy-res'));
-  beforeEach(module('angular-hy-res-hal'));
+  beforeEach(angular.mock.module('angular-hy-res'));
+  beforeEach(angular.mock.module('angular-hy-res-hal'));
 
-  beforeEach(inject(function(_hrResource_, $httpBackend, $rootScope) {
-    hrResource = _hrResource_;
+  beforeEach(angular.mock.inject(function(_hrRoot_, $httpBackend, $rootScope) {
+    hrResource = _hrRoot_;
     httpBackend = $httpBackend;
     rootScope = $rootScope;
   }));
@@ -110,26 +65,26 @@ describe('Module: angular-hy-res', function () {
       httpBackend
         .expectGET('/orders/123')
         .respond(raw,{'Content-Type': 'application/hal+json'});
-      resource = hrResource('/orders/123').get();
+      resource = new hrResource('/orders/123').follow();
       context.resource = resource;
       context.rootScope = rootScope;
     });
 
-    unresolvedResourceBehavior(context);
+    resourceAssertions.unresolvedResourceBehavior(context);
 
     describe('a resolved resource', function() {
       beforeEach(function () {
         httpBackend.flush();
       });
 
-      resolvedResourceBehavior(context);
+      resourceAssertions.resolvedResourceBehavior(context);
 
       it('should contain the parsed properties', function () {
         expect(resource.type).toBe('promo');
       });
 
       it('should have the self link', function () {
-        expect(resource.$link('self')).toEqual({ href: '/orders/123' });
+        expect(resource.$link('self').href).toEqual('/orders/123');
       });
 
       it('should have other link be null', function () {
@@ -143,7 +98,7 @@ describe('Module: angular-hy-res', function () {
           context.resource = payment;
         });
 
-        resolvedResourceBehavior(context);
+        resourceAssertions.resolvedResourceBehavior(context);
 
         it('should not be null', function () {
           expect(payment).not.toBeNull();
@@ -168,7 +123,7 @@ describe('Module: angular-hy-res', function () {
         it('should contain resolved resources', function () {
           for (var r in discounts) {
             context.resource = r;
-            resolvedResourceBehavior(context);
+            resourceAssertions.resolvedResourceBehavior(context);
           }
         });
 
@@ -204,14 +159,14 @@ describe('Module: angular-hy-res', function () {
           context.resource = customerResource;
         });
 
-        unresolvedResourceBehavior(context);
+        resourceAssertions.unresolvedResourceBehavior(context);
 
         describe('and then resolved', function () {
           beforeEach(function () {
             httpBackend.flush();
           });
 
-          resolvedResourceBehavior(context);
+          resourceAssertions.resolvedResourceBehavior(context);
 
           it('should have the raw properties', function () {
             expect(customerResource.name).toBe('John Wayne');
@@ -243,7 +198,7 @@ describe('Module: angular-hy-res', function () {
         it('is an array of unresolved resources', function() {
           for (var s in stores) {
             context.resource = s;
-            unresolvedResourceBehavior(context);
+            resourceAssertions.unresolvedResourceBehavior(context);
           }
         });
 
@@ -275,7 +230,7 @@ describe('Module: angular-hy-res', function () {
           context.resource = shippingResource;
         });
 
-        resolvedResourceBehavior(context);
+        resourceAssertions.resolvedResourceBehavior(context);
 
         it ('should have the embedded resource properties', function() {
           expect(shippingResource.street1).toBe('123 Wilkes Lane');
@@ -301,15 +256,15 @@ describe('Module: angular-hy-res', function () {
           context.resource = customerResource;
         });
 
-        unresolvedResourceBehavior(context);
-        
+        resourceAssertions.unresolvedResourceBehavior(context);
+
         describe('and then resolved', function() {
           beforeEach(function() {
             httpBackend.flush();
           });
-        
-          resolvedResourceBehavior(context);
-        
+
+          resourceAssertions.resolvedResourceBehavior(context);
+
           it('should have the raw properties', function() {
             expect(customerResource.name).toBe('John Wayne');
           });
@@ -334,15 +289,15 @@ describe('Module: angular-hy-res', function () {
           context.resource = customerResource;
         });
 
-        unresolvedResourceBehavior(context);
-        
+        resourceAssertions.unresolvedResourceBehavior(context);
+
         describe('and then resolved', function() {
           beforeEach(function() {
             httpBackend.flush();
           });
-        
-          resolvedResourceBehavior(context);
-        
+
+          resourceAssertions.resolvedResourceBehavior(context);
+
           it('should have the raw properties', function() {
             expect(customerResource.name).toBe('Bruce Lee');
           });
@@ -379,14 +334,14 @@ describe('Module: angular-hy-res', function () {
         context.resource = profileResource;
       });
 
-      unresolvedResourceBehavior(context);
+      resourceAssertions.unresolvedResourceBehavior(context);
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
           httpBackend.flush();
         });
 
-        resolvedResourceBehavior(context);
+        resourceAssertions.resolvedResourceBehavior(context);
 
         it('should have the profile location', function() {
           expect(profileResource.location).toBe('Anytown, USA');

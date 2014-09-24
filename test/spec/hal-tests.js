@@ -4,9 +4,9 @@ describe('angular-hy-res: hrHalExtension', function () {
   var hrHalExtension;
 
   // load the controller's module
-  beforeEach(module('angular-hy-res-hal'));
+  beforeEach(angular.mock.module('angular-hy-res-hal'));
 
-  beforeEach(inject(function(_hrHalExtension_) {
+  beforeEach(angular.mock.inject(function(_hrHalExtension_) {
     hrHalExtension = _hrHalExtension_;
   }));
 
@@ -20,7 +20,7 @@ describe('angular-hy-res: hrHalExtension', function () {
   describe('links parser', function() {
     it('should return the links', function() {
       var links = hrHalExtension.linkParser({_links: { self: { href: '/orders/123' } } }, {}, 200);
-      expect(links.self).toEqual({ href: '/orders/123' });
+      expect(links.self.href).toEqual('/orders/123');
     });
   });
 });

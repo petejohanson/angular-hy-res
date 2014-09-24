@@ -50,19 +50,18 @@ var hrLinkHeader =
 	var httpLink = __webpack_require__(1);
 
 	angular.module('angular-hy-res-link-header', ['angular-hy-res'])
-	  .service('hrLinkHeaderExtension', function() {
+	  .service('hrLinkHeaderExtension', function(hrWebLinkFactory) {
 	    this.applies = function(data, headers) {
 	      return headers('Link') !== null;
-	//      return !angular.isNull(headers('Link'));
 	    };
 
-	    this.linkParser = function(data, headers) {
+	    this.linkParser = function(data, headers, Resource) {
 	      var links = httpLink.parse(headers('Link'));
 
 	      var ret = {};
 	      for(var i = 0; i < links.length; i++) {
 	        var l = links[i];
-	        ret[l.rel] = l;
+	        ret[l.rel] = hrWebLinkFactory(l, {}, Resource);
 	        delete l.rel;
 	      }
 	      return ret;
