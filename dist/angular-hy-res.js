@@ -7,9 +7,8 @@
  */
 'use strict';
 
-var WebLink = function(data, context, $http, Resource, URITemplate) {
+var WebLink = function(data, $http, Resource, URITemplate) {
   angular.extend(this, data);
-  this.$$context = context;
   this.$$http = $http;
   this.$$Resource = Resource;
   this.$$URITemplate = URITemplate;
@@ -75,8 +74,8 @@ angular.module('angular-hy-res', [])
     return (LinkCollection);
   }])
   .factory('hrWebLinkFactory', ['hrWebLink', '$http', 'URITemplate', function(hrWebLink, $http, URITemplate) {
-    return function(data, context, resource) {
-      return new hrWebLink(data, context, $http, resource, URITemplate);
+    return function(data, resource) {
+      return new hrWebLink(data, $http, resource, URITemplate);
     };
   }])
   .provider('hrResource', function() {
@@ -114,14 +113,7 @@ angular.module('angular-hy-res', [])
             return null; // TODO: Something else to return? Resource w/ rejected promise and error?
           }
 
-          if (angular.isArray(link)) {
-            var res = link.map(function(l) { return l.follow(options); });
-            res.$promise = $q.all(res.map(function(r) { return r.$promise; }));
-            res.$resolved = false;
-            res.$promise.then(function(r) { res.$resolved = true; });
-
-            return res;
-          } else if (angular.isFunction(link.follow)) {
+          if (angular.isFunction(link.follow)) {
             // Shortcut to avoid duplicate resource overhead if not a promise.
             return link.follow(options);
           }
@@ -165,7 +157,6 @@ angular.module('angular-hy-res', [])
 
       Resource.prototype.$$resolve = function(data, headers) {
         angular.extend(this, data);
-        var embedded = {};
         angular.forEach(exts, function(e) {
           if (!e.applies(data, headers)) {
             return;
@@ -197,31 +188,6 @@ angular.module('angular-hy-res', [])
         return ret;
       };
 
-      Resource.get = function(link, options) {
-        var res = new Resource();
-
-        res.$promise =
-          $q.when(link)
-          .then(function(l) {
-            var url = l.href;
-
-            if (l.templated) {
-              url = new URITemplate(url).expand(options.data);
-            }
-
-            var httpConfig = angular.extend(options || {}, { url: url });
-            return $http(httpConfig);
-          })
-          .then(function(response) {
-            res.$$resolve(response.data, response.headers);
-            return res;
-          }, function(response) {
-            // TODO: What to do for failure case?
-        });
-
-        return res;
-      };
-
       Resource.fromRequest = function(request) {
         var res = new Resource();
         res.$promise =
@@ -240,7 +206,7 @@ angular.module('angular-hy-res', [])
   }).factory('hrRoot', ['hrWebLink', 'hrResource', '$http', function(hrWebLink, hrResource, $http) {
     return function(url, options) {
       this.follow = function() {
-        return new hrWebLink({ href: url }, options, $http, hrResource).follow();
+        return new hrWebLink({ href: url }, $http, hrResource).follow(options);
       };
     };
   }]);

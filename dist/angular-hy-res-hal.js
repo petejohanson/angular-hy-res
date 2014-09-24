@@ -8,7 +8,7 @@
 'use strict';
 
 angular.module('angular-hy-res-hal', ['angular-hy-res'])
-  .service('hrHalExtension', ['hrWebLinkFactory', function(hrWebLinkFactory) {
+  .service('hrHalExtension', ['hrWebLinkFactory', 'hrLinkCollection', function(hrWebLinkFactory, hrLinkCollection) {
     this.applies = function(data, headers) {
       return headers('Content-Type') === 'application/hal+json';
     };
@@ -22,11 +22,11 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
         if (angular.isArray(val)) {
           var linkArray = [];
           angular.forEach(val, function(l) {
-            linkArray.push(hrWebLinkFactory(l, {}, Resource));
+            linkArray.push(hrWebLinkFactory(l, Resource));
           });
-          ret[key] = linkArray;
+          ret[key] = hrLinkCollection.fromArray(linkArray);
         } else {
-          ret[key] = hrWebLinkFactory(val, {}, Resource); // TODO: Context?
+          ret[key] = hrWebLinkFactory(val, Resource);
         }
       });
       return ret;
