@@ -80,4 +80,43 @@ describe('angular-hy-res: hrWebLink', function () {
       });
     });
   });
+
+  describe('creating a web link with type expectation provided', function() {
+    var link;
+
+    beforeEach(function() {
+      link = hrWebLinkFactory({
+        href: '/posts?page=2',
+        type: 'application/json'
+      }, hrResource);
+    });
+
+    it('has the type', function() {
+      expect(link.type).toBe('application/json');
+    });
+
+    describe('following the link with no options provided', function() {
+      it('sends the type in the Accept header', function() {
+        httpBackend.expectGET('/posts?page=2', function(headers) {
+          return headers.Accept === 'application/json';
+        }).respond({});
+
+        link.follow();
+
+        httpBackend.flush();
+      });
+    });
+
+    describe('following the link with explicit Accept header in options', function() {
+      it('sends the provided Accept header', function() {
+        httpBackend.expectGET('/posts?page=2', function(headers) {
+          return headers.Accept === 'text/plain';
+        }).respond({});
+
+        link.follow({ headers: { 'Accept': 'text/plain' } });
+
+        httpBackend.flush();
+      });
+    });
+  });
 });

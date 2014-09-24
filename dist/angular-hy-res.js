@@ -21,6 +21,13 @@ WebLink.prototype.follow = function(options) {
     url = new this.$$URITemplate(url).expand(options.data);
   }
 
+  options = (options || {});
+  options.headers = (options.headers || {});
+
+  if(this.type && !options.headers.Accept) {
+    options.headers.Accept = this.type;
+  }
+
   var httpConfig = angular.extend(options || {}, { url: url });
   return this.$$Resource.fromRequest(this.$$http(httpConfig));
 };
