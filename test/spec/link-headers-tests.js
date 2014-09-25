@@ -45,6 +45,25 @@ describe('angular-hy-res: hrLinkHeaderExtension', function () {
     });
   });
 
+  describe('parsing multiple links with the same rel', function() {
+    var links;
+    beforeEach(function() {
+      links = hrLinkHeaderExtension.linkParser({}, function(header) {
+        return header === 'Link' ? '</posts?page=1>; rel="section"; title="Page 1", </posts?page=2>; rel="section"; title="Page 2"' : null;
+      }, hrResource);
+    });
+
+    it('has the first link', function() {
+      expect(links.section[0].href).toBe('/posts?page=1');
+      expect(links.section[0].title).toBe('Page 1');
+    });
+
+    it('has the second link', function() {
+      expect(links.section[1].href).toBe('/posts?page=2');
+      expect(links.section[1].title).toBe('Page 2');
+    });
+  });
+
   describe('embedded parser', function() {
     it('should return an empty array', function() {
       var embedded = hrLinkHeaderExtension.embeddedParser({}, {});

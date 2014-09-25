@@ -57,7 +57,19 @@ angular.module('angular-hy-res-link-header', ['angular-hy-res'])
       var ret = {};
       for(var i = 0; i < links.length; i++) {
         var l = links[i];
-        ret[l.rel] = hrWebLinkFactory(l, Resource);
+        var wl = hrWebLinkFactory(l, Resource);
+        if (!angular.isUndefined(ret[l.rel])) {
+          var current = ret[l.rel];
+          if (!angular.isArray(current)) {
+            current = [current];
+            ret[l.rel] = current;
+          }
+
+          current.push(wl);
+        } else {
+          ret[l.rel] = wl;
+        }
+
         delete l.rel;
       }
       return ret;
