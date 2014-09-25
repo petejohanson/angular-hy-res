@@ -60,12 +60,12 @@ function getJSHintPipe(rc) {
 }
 
 gulp.task('js-single', ['jshint'], function () {
-  jsSourcePipe()
+  return jsSourcePipe()
     .pipe(getOutputPipe(require('./package.json'))());
 });
 
 gulp.task('js-full', ['jshint'], function () {
-  gulp.src('src/**/*.js')
+  return gulp.src('src/**/*.js')
     .pipe(concat('angular-hy-res-full.js'))
     .pipe(getOutputPipe(require('./package.json'))());
 });
@@ -74,11 +74,8 @@ gulp.task('clean', function(cb) {
   del('dist/**', cb);
 });
 
-gulp.task('build', function() {
-  runSequence(
-    'clean',
-    ['js-single', 'js-full']
-  );
+gulp.task('build', ['clean'], function(cb) {
+  return runSequence(['js-single', 'js-full'], cb);
 });
 
 gulp.task('jshint', ['jshint:src', 'jshint:test', 'jshint:gulpfile']);
@@ -136,11 +133,12 @@ gulp.task('tag', function() {
     .pipe(tagVersion());
 });
 
-gulp.task('release', function() {
+gulp.task('release', function(cb) {
   runSequence(
     'bump',
     'bump-commit',
-    'tag'
+    'tag',
+    cb
   );
 });
 
