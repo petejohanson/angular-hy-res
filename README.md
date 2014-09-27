@@ -10,6 +10,8 @@ angular-hy-res is available via Bower. To install:
 
     $ bower install --save angular-hy-res
 
+_Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stbake API should set an explicit version in bower.json_
+
 ### Manual
 
 Download the [production version][min] or the [development version][max].
@@ -30,27 +32,28 @@ angular-hy-res offers an alternative to the built in AngularJS `$resource` servi
 controls, links (and/or embedded resources) discovered by link relation, to traverse a hypermedia enabled API.
 
 The core of angular-hy-res is found in the `angular-hy-res` AngularJs module. To enable it, add that module to your own
-module definition. In addition, if you want to use the HAL integration, you must include the `angular-hy-res-hal` module:
+module definition. In addition, if you want to use the HAL or Link header integration, you must include the `angular-hy-res-hal` or `angular-hy-res-link-header` modules:
 
 ```javascript
 angular.module('myApp', [
     'angular-hy-res',
-    'angular-hy-res-hal'
+    'angular-hy-res-hal',
+    'angular-hy-res-link-header'
   ]);
 ```
 
 _In the future, integration with other hypermedia formats, e.g. Siren, Uber, JSON-LD, will be available in their own modules._
 
 Most hypermedia APIs are accessed by fetching the API root from a well known URL, and then following links from there
-to do any further interactions. The main entry point to `angular-hy-res` is the `hrResource` service, which allows you
+to do any further interactions. The main entry point to `angular-hy-res` is the `hrRoot` service, which allows you
 to fetch a resource for the API root. The easiest way to do this is to inject the root in the `$routeProvider`:
 
 ```javascript
 $routeProvider
   .when('/posts', {
     resolve: {
-      root: function(hrResource) {
-        return hrResource('/api').get().$promise;
+      root: function(hrRoot) {
+        return hrRoot('/api').follow().$promise;
       }
     }
   };
@@ -81,6 +84,8 @@ res.$follow('next')
 
 _Note: In HAL, whether a given link relation wil contain a single link object, or a (possibly empty) array of link objects
 is considered part of the 'contract', and any change to this cardinality is considered a breaking change._
+
+#### URI Templates
 
 Should the particular link relation contain a [URI Template](http://tools.ietf.org/html/rfc6570) instead of a URL, then
 values passed in the `data` property of the `options` parameter will be used to process URI Template, e.g.
@@ -236,7 +241,6 @@ And the view:
 
 ## To Do
 
-* HTTP Link header extension
 * Extensions for other media types (e.g. Siren, Uber)
 * Hypermedia Actions/Forms? (Not present in HAL)
 * Handle following a link relation that will be an array once the given resource resolves.
