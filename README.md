@@ -10,7 +10,7 @@ angular-hy-res is available via Bower. To install:
 
     $ bower install --save angular-hy-res
 
-_Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stbake API should set an explicit version in bower.json_
+_Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stable API should set an explicit version in bower.json_
 
 ### Manual
 
