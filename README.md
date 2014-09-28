@@ -189,6 +189,19 @@ In addition, a `follow` function can be used to dereference all the links contai
 Returns an `Array` of `hrResource` instances. In addition, the array has a `$promise` property that will resolve
 when all of the `hrResource` instances resolve, allowing you to perform some logic once everything has been fetched.
 
+### HAL Extension
+
+By default, the HAL extension will only process links an embedded resources in responses if the HTTP response
+`Content-Type` header equals `application/hal+json`. If you have a custom media type that extends HAL, you can register
+it with with the `hrHalExtensionProvider` in the `mediaTypes` array:
+
+```javascript
+angular.module('myModule', ['angular-hy-res-hal'])
+  .config(function(hrHalExtensionProvider) {
+    hrHalExtensionProvider.mediaTypes.push('application/vnd.myco.mytype');
+  });
+```
+
 ## Examples
 
 A complete working example can be found at [angular-hy-res-example](https://github.com/petejohanson/angular-hy-res-example),
@@ -281,7 +294,6 @@ And the view:
 * Convenience function on `hrResource` to check for presence of relation in either links or embedded.
 * Hypermedia Actions/Forms? (Not present in HAL)
 * Handle following a link relation that will be an array once the given resource resolves.
-* Allow configuration of custom media types to be processed by HAL extension
 * Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Correct relative URI resolution for following links.
