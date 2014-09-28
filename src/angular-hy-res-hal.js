@@ -39,7 +39,7 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
       };
 
       return new HalExtension();
-    }
+    };
   })
   .config(['hrResourceProvider', function(hrResourceProvider) {
     hrResourceProvider.extensions.push('hrHalExtension');
