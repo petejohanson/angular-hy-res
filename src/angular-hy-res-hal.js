@@ -13,6 +13,15 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
         this.applies = function(data, headers) {
           return mediaTypeSet[headers('Content-Type')] !==  undefined;
         };
+
+        this.dataParser = function(data, headers) {
+          var ret = {};
+          angular.copy(data, ret);
+          delete ret._links;
+          delete ret._embedded;
+          return ret;
+        };
+        
         this.linkParser = function(data, headers, Resource) {
           if (!angular.isObject(data._links)) {
             return null;

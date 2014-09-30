@@ -24,6 +24,17 @@ describe('angular-hy-res: hrHalExtension', function () {
         expect(links.self.href).toEqual('/orders/123');
       });
     });
+
+    describe('data parser', function() {
+      it('should return the properties without _links or _embedded', function() {
+        var data = hrHalExtension.dataParser({
+          _links: { self: { href: '/orders/123' } },
+          name: 'John Doe'
+        }, {});
+
+        expect(data).toEqual({ name: 'John Doe' });
+      });
+    });
   });
 
   describe('the provider', function() {

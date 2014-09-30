@@ -8,6 +8,10 @@ angular.module('angular-hy-res-link-header', ['angular-hy-res'])
       return headers('Link') !== null;
     };
 
+    this.dataParser = function() {
+      return {};
+    };
+
     this.linkParser = function(data, headers, Resource) {
       var links = httpLink.parse(headers('Link'));
 

@@ -7,6 +7,7 @@ describe('angular-hy-res: hrWebLink', function () {
 
   // load the controller's module
   beforeEach(angular.mock.module('angular-hy-res'));
+  beforeEach(angular.mock.module('angular-hy-res-hal'));
 
   beforeEach(angular.mock.inject(function(_hrWebLinkFactory_, _hrResource_, $rootScope, $httpBackend) {
     hrWebLinkFactory = _hrWebLinkFactory_;
@@ -35,7 +36,7 @@ describe('angular-hy-res: hrWebLink', function () {
       var context = {};
 
       beforeEach(function() {
-        httpBackend.expectGET('/posts/123').respond('{\"title\":\"Hypermedia and AngularJS\"}');
+        httpBackend.expectGET('/posts/123').respond('{\"title\":\"Hypermedia and AngularJS\"}', { 'Content-Type': 'application/hal+json' });
         resource = link.follow();
         context.rootScope = rootScope;
         context.resource = resource;

@@ -70,4 +70,11 @@ describe('angular-hy-res: hrLinkHeaderExtension', function () {
       expect(embedded).toEqual([]);
     });
   });
+
+  describe('data parser', function() {
+    it('should return an empty object', function() {
+      var data = hrLinkHeaderExtension.dataParser({ name: 'John Doe' }, {});
+      expect(data).toEqual({});
+    });
+  });
 });

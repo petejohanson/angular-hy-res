@@ -55,6 +55,10 @@ var hrLinkHeader =
 	      return headers('Link') !== null;
 	    };
 
+	    this.dataParser = function() {
+	      return {};
+	    };
+
 	    this.linkParser = function(data, headers, Resource) {
 	      var links = httpLink.parse(headers('Link'));
 

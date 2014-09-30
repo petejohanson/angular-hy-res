@@ -156,11 +156,12 @@ angular.module('angular-hy-res', [])
       };
 
       Resource.prototype.$$resolve = function(data, headers) {
-        angular.extend(this, data);
         angular.forEach(exts, function(e) {
           if (!e.applies(data, headers)) {
             return;
           }
+
+          angular.extend(this, e.dataParser(data, headers));
 
           angular.extend(this.$$links, e.linkParser(data, headers, Resource));
           angular.forEach(e.embeddedParser(data, headers, Resource), function(raw, rel) {

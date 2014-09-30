@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.6 - 2014-09-28
+ * @version v0.0.6 - 2014-09-30
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -20,6 +20,15 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
         this.applies = function(data, headers) {
           return mediaTypeSet[headers('Content-Type')] !==  undefined;
         };
+
+        this.dataParser = function(data, headers) {
+          var ret = {};
+          angular.copy(data, ret);
+          delete ret._links;
+          delete ret._embedded;
+          return ret;
+        };
+        
         this.linkParser = function(data, headers, Resource) {
           if (!angular.isObject(data._links)) {
             return null;
@@ -61,6 +70,10 @@ angular.module('angular-hy-res-link-header', ['angular-hy-res'])
   .service('hrLinkHeaderExtension', function(hrWebLinkFactory) {
     this.applies = function(data, headers) {
       return headers('Link') !== null;
+    };
+
+    this.dataParser = function() {
+      return {};
     };
 
     this.linkParser = function(data, headers, Resource) {
@@ -254,11 +267,12 @@ angular.module('angular-hy-res', [])
       };
 
       Resource.prototype.$$resolve = function(data, headers) {
-        angular.extend(this, data);
         angular.forEach(exts, function(e) {
           if (!e.applies(data, headers)) {
             return;
           }
+
+          angular.extend(this, e.dataParser(data, headers));
 
           angular.extend(this.$$links, e.linkParser(data, headers, Resource));
           angular.forEach(e.embeddedParser(data, headers, Resource), function(raw, rel) {
