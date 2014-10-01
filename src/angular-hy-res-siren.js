@@ -52,7 +52,21 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
         };
 
         this.embeddedParser = function(data, headers) {
-          return {};
+          var ret = {};
+          if (!angular.isArray(data.entities)) {
+            return ret;
+          }
+
+          angular.forEach(data.entities, function(val) {
+            if (val.href) {
+              return;
+            }
+
+            for (var li = 0; li < val.rel.length; li++) {
+              ret[val.rel[li]] = val;
+            }
+          });
+          return ret;
         };
       };
 

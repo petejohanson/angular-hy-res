@@ -58,6 +58,24 @@ describe('angular-hy-res: hrSirenExtension', function () {
       });
     });
 
+    describe('the embedded parser', function() {
+      it('should return the fully embedded entities', function() {
+        var embedded = hrSirenExtension.embeddedParser({
+          entities: [
+            {
+              rel: ['order'],
+              links: [
+                { rel: ['self'], href: '/orders/123' }
+              ],
+              title: 'My Order #123'
+            }
+          ]
+        }, {});
+
+        expect(embedded.order.title).toBe('My Order #123');
+      });
+    });
+
     describe('data parser', function() {
       it('should return the properties field values', function() {
         var data = hrSirenExtension.dataParser({

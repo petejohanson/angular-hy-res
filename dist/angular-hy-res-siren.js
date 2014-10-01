@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.6 - 2014-09-30
+ * @version v0.0.6 - 2014-10-01
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -59,7 +59,21 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
         };
 
         this.embeddedParser = function(data, headers) {
-          return {};
+          var ret = {};
+          if (!angular.isArray(data.entities)) {
+            return ret;
+          }
+
+          angular.forEach(data.entities, function(val) {
+            if (val.href) {
+              return;
+            }
+
+            for (var li = 0; li < val.rel.length; li++) {
+              ret[val.rel[li]] = val;
+            }
+          });
+          return ret;
         };
       };
 
