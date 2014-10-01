@@ -135,17 +135,30 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
         };
 
         this.linkParser = function(data, headers, Resource) {
-          if (!angular.isObject(data.links)) {
-            return {};
-          }
 
           var ret = {};
-          angular.forEach(data.links, function(val) {
-            var link = hrWebLinkFactory(val);
-            for (var li = 0; li < val.rel.length; li++) {
-              ret[val.rel[li]] = link;
-            }
-          });
+
+          if (angular.isObject(data.links)) {
+            angular.forEach(data.links, function (val) {
+              var link = hrWebLinkFactory(val);
+              for (var li = 0; li < val.rel.length; li++) {
+                ret[val.rel[li]] = link;
+              }
+            });
+          }
+
+          if (angular.isObject(data.entities)) {
+            angular.forEach(data.entities, function(val) {
+              if (!val.href) {
+                return;
+              }
+
+              var link = hrWebLinkFactory(val);
+              for (var li = 0; li < val.rel.length; li++) {
+                ret[val.rel[li]] = link;
+              }
+            });
+          }
           return ret;
         };
 

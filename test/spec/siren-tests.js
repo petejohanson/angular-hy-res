@@ -40,6 +40,22 @@ describe('angular-hy-res: hrSirenExtension', function () {
         },{}, 200);
         expect(links.section.length).toBe(2);
       });
+
+      it('should include sub-entity links', function() {
+        var links = hrSirenExtension.linkParser({
+          links: [
+            { rel: ['self'], href: '/orders/123' }
+          ],
+          entities: [
+            {
+              rel: ['order'],
+              href: '/orders/123'
+            }
+          ]
+        }, {}, 200);
+
+        expect(links.order.href).toBe('/orders/123');
+      });
     });
 
     describe('data parser', function() {
@@ -70,18 +86,18 @@ describe('angular-hy-res: hrSirenExtension', function () {
       });
     });
   });
-  //
-  //describe('the provider', function() {
-  //  it('handles additional media types', function() {
-  //    angular.mock.module('angular-hy-res-hal', function(hrHalExtensionProvider) {
-  //      hrHalExtensionProvider.mediaTypes.push('application/vnd.myco.blog');
-  //    });
-  //
-  //    inject(function(hrHalExtension) {
-  //      expect(hrHalExtension.applies({}, function(header) {
-  //        return header === 'Content-Type' ? 'application/vnd.myco.blog' : null;
-  //      })).toBeTruthy();
-  //    });
-  //  });
-  //});
+
+  describe('the provider', function() {
+    it('handles additional media types', function() {
+      angular.mock.module('angular-hy-res-siren', function(hrSirenExtensionProvider) {
+        hrSirenExtensionProvider.mediaTypes.push('application/vnd.myco.blog');
+      });
+
+      inject(function(hrSirenExtension) {
+        expect(hrSirenExtension.applies({}, function(header) {
+          return header === 'Content-Type' ? 'application/vnd.myco.blog' : null;
+        })).toBeTruthy();
+      });
+    });
+  });
 });
