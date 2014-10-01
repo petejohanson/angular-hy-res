@@ -32,12 +32,14 @@ angular-hy-res offers an alternative to the built in AngularJS `$resource` servi
 controls, links (and/or embedded resources) discovered by link relation, to traverse a hypermedia enabled API.
 
 The core of angular-hy-res is found in the `angular-hy-res` AngularJs module. To enable it, add that module to your own
-module definition. In addition, if you want to use the HAL or Link header integration, you must include the `angular-hy-res-hal` or `angular-hy-res-link-header` modules:
+module definition. In addition, if you want to use the HAL, Siren, or Link header integration, you must include the
+`angular-hy-res-hal`, `angular-hy-res-siren`, or `angular-hy-res-link-header` modules:
 
 ```javascript
 angular.module('myApp', [
     'angular-hy-res',
     'angular-hy-res-hal',
+    'angular-hy-res-siren',
     'angular-hy-res-link-header'
   ]);
 ```
@@ -202,6 +204,24 @@ angular.module('myModule', ['angular-hy-res-hal'])
   });
 ```
 
+### hrSirenExtension
+
+By default, the Siren extension will only process links an embedded resources in responses if the HTTP response
+`Content-Type` header equals `application/vnd.siren+json`. If you have a custom media type that extends Siren, you can register
+it with with the `hrSirenExtensionProvider` in the `mediaTypes` array:
+
+```javascript
+angular.module('myModule', ['angular-hy-res-siren'])
+  .config(function(hrSirenExtensionProvider) {
+    hrSirenExtensionProvider.mediaTypes.push('application/vnd.myco.mytype');
+  });
+```
+
+At this point, the Siren extension includes both the Siren `links` and the sub-entity embedded links in the set
+ queried by the `$link` function of `hrResource`.
+
+_Note: At this point, Siren actions are not supported._ 
+
 ## Examples
 
 A complete working example can be found at [angular-hy-res-example](https://github.com/petejohanson/angular-hy-res-example),
@@ -290,7 +310,7 @@ And the view:
 
 ## To Do
 
-* Extensions for other media types (e.g. Siren, Uber)
+* Extensions for other media types (e.g. Collection+Json, Uber)
 * Convenience function on `hrResource` to check for presence of relation in either links or embedded.
 * Hypermedia Actions/Forms? (Not present in HAL)
 * Handle following a link relation that will be an array once the given resource resolves.
