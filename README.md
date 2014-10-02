@@ -2,6 +2,10 @@
 
 A hypermedia client/library for [AngularJS](http://angularjs.org/). A [HAL](http://tools.ietf.org/html/draft-kelly-json-hal-06) media type extension is included by default, but support for other media types can be added.
 
+## Support
+
+For any questions, please post to the [AngularHyRes Google Group](https://groups.google.com/forum/#!forum/angular-hy-res).
+
 ## Installation
 
 ### Bower
