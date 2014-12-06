@@ -21,13 +21,13 @@ describe('angular-hy-res: hrSirenExtension', function () {
     describe('links parser', function() {
       it('should return the basic link', function() {
         var links = hrSirenExtension.linkParser({links: [ { rel: ['self'], href: '/orders/123' } ] }, {}, 200);
-        expect(links.self.href).toEqual('/orders/123');
+        expect(links.self[0].href).toEqual('/orders/123');
       });
 
       it('should return link for each relation in rel array', function() {
         var links = hrSirenExtension.linkParser({links: [ { rel: ['self', 'order'], href: '/orders/123' } ] }, {}, 200);
-        expect(links.self.href).toEqual('/orders/123');
-        expect(links.order.href).toEqual('/orders/123');
+        expect(links.self[0].href).toEqual('/orders/123');
+        expect(links.order[0].href).toEqual('/orders/123');
       });
 
       xit('should return a link array for duplicate link rels', function() {
@@ -54,7 +54,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
           ]
         }, {}, 200);
 
-        expect(links.order.href).toBe('/orders/123');
+        expect(links.order[0].href).toBe('/orders/123');
       });
     });
 

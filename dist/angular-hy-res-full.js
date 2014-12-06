@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.6 - 2014-10-03
+ * @version v0.0.6 - 2014-12-06
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -28,7 +28,7 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
           delete ret._embedded;
           return ret;
         };
-        
+
         this.linkParser = function(data, headers, Resource) {
           if (!angular.isObject(data._links)) {
             return null;
@@ -36,15 +36,16 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
 
           var ret = {};
           angular.forEach(data._links, function(val, key) {
-            if (angular.isArray(val)) {
-              var linkArray = [];
-              angular.forEach(val, function(l) {
-                linkArray.push(hrWebLinkFactory(l, Resource));
-              });
-              ret[key] = hrLinkCollection.fromArray(linkArray);
-            } else {
-              ret[key] = hrWebLinkFactory(val, Resource);
+            if (!angular.isArray(val)) {
+              val = [val];
             }
+
+            var linkArray = [];
+            angular.forEach(val, function(l) {
+              linkArray.push(hrWebLinkFactory(l, Resource));
+            });
+
+            ret[key] = hrLinkCollection.fromArray(linkArray);
           });
           return ret;
         };
@@ -84,15 +85,9 @@ angular.module('angular-hy-res-link-header', ['angular-hy-res'])
         var l = links[i];
         var wl = hrWebLinkFactory(l, Resource);
         if (!angular.isUndefined(ret[l.rel])) {
-          var current = ret[l.rel];
-          if (!angular.isArray(current)) {
-            current = [current];
-            ret[l.rel] = current;
-          }
-
-          current.push(wl);
+          ret[l.rel].push(wl);
         } else {
-          ret[l.rel] = wl;
+          ret[l.rel] = [wl];
         }
 
         delete l.rel;
@@ -142,7 +137,12 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
             angular.forEach(data.links, function (val) {
               var link = hrWebLinkFactory(val, Resource);
               for (var li = 0; li < val.rel.length; li++) {
-                ret[val.rel[li]] = link;
+                var r = val.rel[li];
+                if (ret.hasOwnProperty(r)) {
+                  ret[r].push(link);
+                } else {
+                  ret[r] = [link];
+                }
               }
             });
           }
@@ -155,7 +155,13 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
 
               var link = hrWebLinkFactory(val, Resource);
               for (var li = 0; li < val.rel.length; li++) {
-                ret[val.rel[li]] = link;
+                //ret[val.rel[li]] = link;
+                var r = val.rel[li];
+                if (ret.hasOwnProperty(r)) {
+                  ret[r].push(link);
+                } else {
+                  ret[r] = [link];
+                }
               }
             });
           }
@@ -248,7 +254,9 @@ angular.module('angular-hy-res', [])
 
     LinkCollection.prototype = {
       follow:  function(options) {
-        var res = this.map(function(l) { return l.follow(options); });
+        var res = this.map(function(l) {
+          return l.follow(options);
+        });
         res.$promise = $q.all(res.map(function(r) { return r.$promise; }));
         res.$resolved = false;
         res.$promise.then(function(r) {
@@ -271,7 +279,7 @@ angular.module('angular-hy-res', [])
   })
   .provider('hrResource', function() {
     this.extensions = [];
-    this.$get = function($http, $q, URITemplate, $injector) {
+    this.$get = function($http, $q, URITemplate, hrLinkCollection, $injector) {
       var exts = [];
       angular.forEach(this.extensions, function(e) {
         exts.push($injector.get(e));
@@ -284,8 +292,20 @@ angular.module('angular-hy-res', [])
         this.$$embedded = {};
 
         this.$link = function(rel) {
-          if (!this.$$links.hasOwnProperty(rel)) {
+          var ret = this.$links(rel);
+          if (ret.length === 0) {
             return null;
+          }
+          if (ret.length > 1) {
+            throw 'Multiple links present';
+          }
+
+          return ret[0];
+        };
+
+        this.$links = function(rel) {
+          if (!this.$$links.hasOwnProperty(rel)) {
+            return [];
           }
 
           return this.$$links[rel];
@@ -299,19 +319,32 @@ angular.module('angular-hy-res', [])
           return this.$$embedded[rel];
         };
 
-        this.$followLink = function(link, options) {
-          if(link === null) {
-            return null; // TODO: Something else to return? Resource w/ rejected promise and error?
+        this.$followOne = function(rel, options) {
+          // TODO: Make follow for embedded work when
+          // called on unresolved resources.
+          var res = this.$embedded(rel);
+
+          if (res !== null) {
+            return res;
           }
 
-          if (angular.isFunction(link.follow)) {
-            // Shortcut to avoid duplicate resource overhead if not a promise.
-            return link.follow(options);
+          if (this.$resolved) {
+            var l = this.$link(rel);
+            if (l === null) {
+              return null; // TODO: Return a resource w/ an error?s
+            }
+
+            return l.follow(options);
           }
 
+          // This resource may not be resolved yet,
+          // so we follow a *future* link by chaining our
+          // own promise.
           var ret = new Resource();
           ret.$promise =
-            $q.when(link)
+              this.$promise.then(function(r) {
+                return r.$link(rel);
+              })
               .then(function(l) {
                 return l.follow(options).$promise;
               }).then(function(r) {
@@ -324,25 +357,32 @@ angular.module('angular-hy-res', [])
           return ret;
         };
 
-        this.$follow = function(rel, options) {
-          // TODO: Make follow for embedded work when
-          // called on unresolved resources.
-          var res = this.$embedded(rel);
-
-          if (res !== null) {
-            return res;
-          }
-
+        this.$followAll = function(rel, options) {
           if (this.$resolved) {
-            return this.$followLink(this.$link(rel), options);
+            return hrLinkCollection.fromArray(this.$links(rel)).follow(options);
           }
 
-          // This resource may not be resolved yet,
-          // so we follow a *future* link by chaining our
-          // own promise.
-          return this.$followLink(this.$promise.then(function(r) {
-            return r.$link(rel);
-          }), options);
+          var ret = [];
+          ret.$resolved = false;
+          var d = $q.defer();
+          ret.$promise = d.promise;
+          ret.$error = null;
+          var coll = new hrLinkCollection();
+          this.$promise.then(function(r) {
+            Array.prototype.push.apply(coll, r.$links(rel));
+            var resources = coll.follow(options);
+            Array.prototype.push.apply(ret, resources);
+            return resources.$promise;
+          }).then(function(r) {
+            d.resolve(ret);
+            ret.$resolved = true;
+          }, function(err) {
+            d.reject(err);
+            ret.$resolved = true;
+            ret.$error = err;
+          });
+
+          return ret;
         };
       };
 

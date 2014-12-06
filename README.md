@@ -84,22 +84,33 @@ the `$promise` property of the resource is available.
 `hrResource offers several functions you can use to interact with links and embedded resources found in
 the resource.
 
-#### $follow(rel, options)
+#### $followOne(rel, options)
 
-This function will follow the given link relation and return either a resource, or array of resources, depending on the
-cardinality of the link relation. It will first attempt to locate the link relation in the embedded resources, and fall
-back to checking for the presence of a link(s) and loading those. Depending on whether an embedded version is found,
+This function will follow the given link relation and return a resource. It will first attempt to locate the link relation in the embedded resources, and fall
+back to checking for the presence of a link and loading those. Depending on whether an embedded version is found,
 or only a link, will determine whether the resource will already be resolved, or will be so in the future. The optional `options`
 parameter can be used to pass additional options to the underlying `$http` request.
 
 ```javascript
-res.$follow('next')
+res.$followOne('next')
 => Resource { $resolved: false, $promise: $q promise object }
 ```
 
-_Note: In HAL, whether a given link relation wil contain a single link object, or a (possibly empty) array of link objects
-is considered part of the 'contract', and any change to this cardinality is considered a breaking change._
+#### $followAll(rel, options)
 
+This function will follow all links for the given relation and return an array
+of resources. If the link relation is not present, then an empty array will be
+returned. It will first attempt to locate the link relation in the embedded
+resources, and fall back to checking for the presence of a link and loading
+those. Depending on whether an embedded version is found, or only links, will
+determine whether the resources will already be resolved, or will be so in the
+future. The optional `options` parameter can be used to pass additional options
+to the underlying `$http` request.
+
+```javascript
+res.$followAll('item')
+=> [Resource { $resolved: false, $promise: $q promise object }]
+```
 ##### URI Templates
 
 Should the particular link relation contain a [URI Template](http://tools.ietf.org/html/rfc6570) instead of a URL, then
@@ -141,18 +152,24 @@ This property is a simple boolean `true/false` value indicating whether the spec
 
 #### $link(rel)
 
-This function will return either a `hrWebLink` or a `hrLinkCollection` depending on the cardinality of the relation in
-the resource. See the `hrWebLink` section for more details.
+This function will return a `hrWebLink` if found for the given relation, or null
+otherwise. If more than one link is found for the given relation, an exception
+will be thrown. See the `hrWebLink` section for more details.
 
 ```javascript
 res.$link('next')
 => hrWebLink { href: '/posts?page=2' }
 ```
 
-Or for a collection of links:
+#### $links(rel)
+
+This function will return a `hrLinkCollection` for the given relation. If
+the link relation is not found, then an empty collection is returned. `null` is
+never returned from this function. See the `hrLinkCollection` section for more
+details.
 
 ```javascript
-res.$link('posts')
+res.$links('posts')
 => hrLinkCollection [ { href: '/posts/123' }, { href: '/posts/345' } ]
 ```
 

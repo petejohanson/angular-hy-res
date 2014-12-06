@@ -83,12 +83,35 @@ describe('Module: angular-hy-res', function () {
         expect(resource.type).toBe('promo');
       });
 
-      it('should have the self link', function () {
-        expect(resource.$link('self').href).toEqual('/orders/123');
+      describe('$link', function() {
+        it('should return the link for single links', function() {
+          expect(resource.$link('self').href).toEqual('/orders/123');
+        });
+
+        it('should return null for a rel not present', function() {
+          expect(resource.$link('blah')).toBeNull();
+        });
+
+        it('should throw an exception for a multiple valued rel', function() {
+          expect(function() { resource.$link('stores'); }).toThrow();
+        });
       });
 
-      it('should have other link be null', function () {
-        expect(resource.$link('blah')).toBe(null);
+      describe('$links', function() {
+        it('should return the links for single links', function() {
+          var links = resource.$links('self');
+          expect(links.length).toBe(1);
+          expect(resource.$links('self')[0].href).toEqual('/orders/123');
+        });
+
+        it('should return empty array for a rel not present', function() {
+          expect(resource.$links('blah')).toEqual([]);
+        });
+
+        it('should return an array for multiple links present', function() {
+          var links = resource.$links('stores');
+          expect(links.length).toBe(2);
+        });
       });
 
       describe('embedded resources', function () {
@@ -141,99 +164,103 @@ describe('Module: angular-hy-res', function () {
         });
       });
 
-      describe('following a link relation', function () {
-        var raw = {
-          _links: {
-            self: { href: '/customers/321' }
-          },
-          name: 'John Wayne'
-        };
+      describe('$followOne', function() {
+        describe('with a single link relation', function () {
+          var raw = {
+            _links: {
+              self: { href: '/customers/321' }
+            },
+            name: 'John Wayne'
+          };
 
-        var customerResource;
+          var customerResource;
 
-        beforeEach(function () {
-          httpBackend
-            .expectGET('/customers/321')
-            .respond(raw, {'Content-Type': 'application/hal+json'});
-          customerResource = resource.$follow('customer');
-          context.resource = customerResource;
+          beforeEach(function () {
+            httpBackend
+              .expectGET('/customers/321')
+              .respond(raw, {'Content-Type': 'application/hal+json'});
+            customerResource = resource.$followOne('customer');
+            context.resource = customerResource;
+          });
+
+          resourceAssertions.unresolvedResourceBehavior(context);
+
+          describe('and then resolved', function () {
+            beforeEach(function () {
+              httpBackend.flush();
+            });
+
+            resourceAssertions.resolvedResourceBehavior(context);
+
+            it('should have the raw properties', function () {
+              expect(customerResource.name).toBe('John Wayne');
+            });
+          });
         });
 
-        resourceAssertions.unresolvedResourceBehavior(context);
+        describe('following a link relation when embedded present', function() {
+          var shippingResource;
 
-        describe('and then resolved', function () {
-          beforeEach(function () {
-            httpBackend.flush();
+          beforeEach(function() {
+            shippingResource = resource.$followOne('shipping-address');
+            context.resource = shippingResource;
           });
 
           resourceAssertions.resolvedResourceBehavior(context);
 
-          it('should have the raw properties', function () {
-            expect(customerResource.name).toBe('John Wayne');
+          it ('should have the embedded resource properties', function() {
+            expect(shippingResource.street1).toBe('123 Wilkes Lane');
           });
         });
       });
 
-      describe('following an link relation that is an array', function () {
-        var stores;
-        beforeEach(function() {
-          var rawStore = {};
-          httpBackend
-            .expectGET('/stores/123')
-            .respond(rawStore, {'Content-Type': 'application/hal+json'});
-          httpBackend
-            .expectGET('/stores/456')
-            .respond(rawStore, {'Content-Type': 'application/hal+json'});
-          stores = resource.$follow('stores');
-        });
-
-        it('has a false $resolved', function() {
-          expect(stores.$resolved).toBe(false);
-        });
-
-        it('has a length of 2', function() {
-          expect(stores.length).toBe(2);
-        });
-
-        it('is an array of unresolved resources', function() {
-          for (var s in stores) {
-            context.resource = s;
-            resourceAssertions.unresolvedResourceBehavior(context);
-          }
-        });
-
-        describe('when the background requests complete', function() {
+      describe('$followAll', function() {
+        describe('following an link relation that is an array', function () {
+          var stores;
           beforeEach(function() {
-            httpBackend.flush();
+            var rawStore = {};
+            httpBackend
+              .expectGET('/stores/123')
+              .respond(rawStore, {'Content-Type': 'application/hal+json'});
+            httpBackend
+              .expectGET('/stores/456')
+              .respond(rawStore, {'Content-Type': 'application/hal+json'});
+            stores = resource.$followAll('stores');
           });
 
-          it('has a true $resolved property', function() {
-            expect(stores.$resolved).toBe(true);
+          it('has a false $resolved', function() {
+            expect(stores.$resolved).toBe(false);
           });
 
-          it('has a $promise that returns the array that completes', function(done) {
-            stores.$promise.then(function(s) {
-              expect(s).toEqual(stores);
-              done();
+          it('has a length of 2', function() {
+            expect(stores.length).toBe(2);
+          });
+
+          it('is an array of unresolved resources', function() {
+            for (var s in stores) {
+              context.resource = s;
+              resourceAssertions.unresolvedResourceBehavior(context);
+            }
+          });
+
+          describe('when the background requests complete', function() {
+            beforeEach(function() {
+              httpBackend.flush();
             });
 
-            rootScope.$apply();
+            it('has a true $resolved property', function() {
+              expect(stores.$resolved).toBe(true);
+            });
+
+            it('has a $promise that returns the array that completes', function(done) {
+              stores.$promise.then(function(s) {
+                expect(s).toEqual(stores);
+                done();
+              });
+
+              rootScope.$apply();
+            });
           });
-        });
-      });
-
-      describe('following a link relation when embedded present', function() {
-        var shippingResource;
-
-        beforeEach(function() {
-          shippingResource = resource.$follow('shipping-address');
-          context.resource = shippingResource;
-        });
-
-        resourceAssertions.resolvedResourceBehavior(context);
-
-        it ('should have the embedded resource properties', function() {
-          expect(shippingResource.street1).toBe('123 Wilkes Lane');
         });
       });
 
@@ -252,7 +279,7 @@ describe('Module: angular-hy-res', function () {
             .expectGET('/customers/321')
             .respond(raw,{'Content-Type': 'application/hal+json'});
           var link = resource.$link('customer');
-          customerResource = resource.$followLink(link);
+          customerResource = link.follow();
           context.resource = customerResource;
         });
 
@@ -285,7 +312,7 @@ describe('Module: angular-hy-res', function () {
           httpBackend
             .expectGET('/customers/666')
             .respond(raw,{'Content-Type': 'application/hal+json'});
-          customerResource = resource.$follow('customer-search', { data: { id: '666' } });
+          customerResource = resource.$followOne('customer-search', { data: { id: '666' } });
           context.resource = customerResource;
         });
 
@@ -304,7 +331,7 @@ describe('Module: angular-hy-res', function () {
         });
       });
     });
-    describe('a series of $follows', function() {
+    describe('a series of $followOne calls', function() {
       var profileResource;
 
       var rawCustomer = {
@@ -330,7 +357,7 @@ describe('Module: angular-hy-res', function () {
           .expectGET('/customers/321/profile')
           .respond(rawProfile,{'Content-Type': 'application/hal+json'});
 
-        profileResource = resource.$follow('customer').$follow('profile');
+        profileResource = resource.$followOne('customer').$followOne('profile');
         context.resource = profileResource;
       });
 
@@ -345,6 +372,51 @@ describe('Module: angular-hy-res', function () {
 
         it('should have the profile location', function() {
           expect(profileResource.location).toBe('Anytown, USA');
+        });
+      });
+    });
+
+    describe('a $followAll call on an unresolved resource', function() {
+      var profileResources;
+
+      var rawCustomer = {
+        _links: {
+          self: { href: '/customers/321' },
+          profile: { href: '/customers/321/profile' }
+        },
+        name: 'John Wayne'
+      };
+
+      var rawProfile = {
+        _links: {
+          self: { href: '/customers/321/profile' }
+        },
+        location: 'Anytown, USA'
+      };
+
+      beforeEach(function() {
+        httpBackend
+          .expectGET('/customers/321')
+          .respond(rawCustomer,{'Content-Type': 'application/hal+json'});
+        httpBackend
+          .expectGET('/customers/321/profile')
+          .respond(rawProfile,{'Content-Type': 'application/hal+json'});
+
+        profileResources = resource.$followOne('customer').$followAll('profile');
+        context.resource = profileResources;
+      });
+
+      resourceAssertions.unresolvedResourceBehavior(context);
+
+      describe('when the chain resolves', function() {
+        beforeEach(function() {
+          httpBackend.flush();
+        });
+
+        resourceAssertions.resolvedResourceBehavior(context);
+
+        it('should have the profile location', function() {
+          expect(profileResources[0].location).toBe('Anytown, USA');
         });
       });
     });

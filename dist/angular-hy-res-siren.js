@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.6 - 2014-10-03
+ * @version v0.0.6 - 2014-12-06
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -38,7 +38,12 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
             angular.forEach(data.links, function (val) {
               var link = hrWebLinkFactory(val, Resource);
               for (var li = 0; li < val.rel.length; li++) {
-                ret[val.rel[li]] = link;
+                var r = val.rel[li];
+                if (ret.hasOwnProperty(r)) {
+                  ret[r].push(link);
+                } else {
+                  ret[r] = [link];
+                }
               }
             });
           }
@@ -51,7 +56,13 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
 
               var link = hrWebLinkFactory(val, Resource);
               for (var li = 0; li < val.rel.length; li++) {
-                ret[val.rel[li]] = link;
+                //ret[val.rel[li]] = link;
+                var r = val.rel[li];
+                if (ret.hasOwnProperty(r)) {
+                  ret[r].push(link);
+                } else {
+                  ret[r] = [link];
+                }
               }
             });
           }

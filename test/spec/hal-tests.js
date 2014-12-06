@@ -21,7 +21,7 @@ describe('angular-hy-res: hrHalExtension', function () {
     describe('links parser', function() {
       it('should return the links', function() {
         var links = hrHalExtension.linkParser({_links: { self: { href: '/orders/123' } } }, {}, 200);
-        expect(links.self.href).toEqual('/orders/123');
+        expect(links.self[0].href).toEqual('/orders/123');
       });
     });
 

@@ -30,8 +30,8 @@ describe('angular-hy-res: hrLinkHeaderExtension', function () {
     });
 
     it('should return the links', function() {
-      expect(links.next.href).toEqual('/posts?page=3');
-      expect(links.prev.href).toEqual('/posts?page=1');
+      expect(links.next[0].href).toEqual('/posts?page=3');
+      expect(links.prev[0].href).toEqual('/posts?page=1');
     });
 
     describe('following a link', function() {
@@ -39,7 +39,7 @@ describe('angular-hy-res: hrLinkHeaderExtension', function () {
       it('should GET the expected URL', function() {
           httpBackend.expectGET('/posts?page=3').respond({});
 
-          links.next.follow();
+          links.next[0].follow();
           httpBackend.flush();
       });
     });

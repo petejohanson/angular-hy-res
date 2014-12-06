@@ -31,7 +31,12 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
             angular.forEach(data.links, function (val) {
               var link = hrWebLinkFactory(val, Resource);
               for (var li = 0; li < val.rel.length; li++) {
-                ret[val.rel[li]] = link;
+                var r = val.rel[li];
+                if (ret.hasOwnProperty(r)) {
+                  ret[r].push(link);
+                } else {
+                  ret[r] = [link];
+                }
               }
             });
           }
@@ -44,7 +49,13 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
 
               var link = hrWebLinkFactory(val, Resource);
               for (var li = 0; li < val.rel.length; li++) {
-                ret[val.rel[li]] = link;
+                //ret[val.rel[li]] = link;
+                var r = val.rel[li];
+                if (ret.hasOwnProperty(r)) {
+                  ret[r].push(link);
+                } else {
+                  ret[r] = [link];
+                }
               }
             });
           }

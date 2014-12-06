@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.6 - 2014-10-03
+ * @version v0.0.6 - 2014-12-06
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -64,7 +64,9 @@ angular.module('angular-hy-res', [])
 
     LinkCollection.prototype = {
       follow:  function(options) {
-        var res = this.map(function(l) { return l.follow(options); });
+        var res = this.map(function(l) {
+          return l.follow(options);
+        });
         res.$promise = $q.all(res.map(function(r) { return r.$promise; }));
         res.$resolved = false;
         res.$promise.then(function(r) {
@@ -87,7 +89,7 @@ angular.module('angular-hy-res', [])
   }])
   .provider('hrResource', function() {
     this.extensions = [];
-    this.$get = ['$http', '$q', 'URITemplate', '$injector', function($http, $q, URITemplate, $injector) {
+    this.$get = ['$http', '$q', 'URITemplate', 'hrLinkCollection', '$injector', function($http, $q, URITemplate, hrLinkCollection, $injector) {
       var exts = [];
       angular.forEach(this.extensions, function(e) {
         exts.push($injector.get(e));
@@ -100,8 +102,20 @@ angular.module('angular-hy-res', [])
         this.$$embedded = {};
 
         this.$link = function(rel) {
-          if (!this.$$links.hasOwnProperty(rel)) {
+          var ret = this.$links(rel);
+          if (ret.length === 0) {
             return null;
+          }
+          if (ret.length > 1) {
+            throw 'Multiple links present';
+          }
+
+          return ret[0];
+        };
+
+        this.$links = function(rel) {
+          if (!this.$$links.hasOwnProperty(rel)) {
+            return [];
           }
 
           return this.$$links[rel];
@@ -115,19 +129,32 @@ angular.module('angular-hy-res', [])
           return this.$$embedded[rel];
         };
 
-        this.$followLink = function(link, options) {
-          if(link === null) {
-            return null; // TODO: Something else to return? Resource w/ rejected promise and error?
+        this.$followOne = function(rel, options) {
+          // TODO: Make follow for embedded work when
+          // called on unresolved resources.
+          var res = this.$embedded(rel);
+
+          if (res !== null) {
+            return res;
           }
 
-          if (angular.isFunction(link.follow)) {
-            // Shortcut to avoid duplicate resource overhead if not a promise.
-            return link.follow(options);
+          if (this.$resolved) {
+            var l = this.$link(rel);
+            if (l === null) {
+              return null; // TODO: Return a resource w/ an error?s
+            }
+
+            return l.follow(options);
           }
 
+          // This resource may not be resolved yet,
+          // so we follow a *future* link by chaining our
+          // own promise.
           var ret = new Resource();
           ret.$promise =
-            $q.when(link)
+              this.$promise.then(function(r) {
+                return r.$link(rel);
+              })
               .then(function(l) {
                 return l.follow(options).$promise;
               }).then(function(r) {
@@ -140,25 +167,32 @@ angular.module('angular-hy-res', [])
           return ret;
         };
 
-        this.$follow = function(rel, options) {
-          // TODO: Make follow for embedded work when
-          // called on unresolved resources.
-          var res = this.$embedded(rel);
-
-          if (res !== null) {
-            return res;
-          }
-
+        this.$followAll = function(rel, options) {
           if (this.$resolved) {
-            return this.$followLink(this.$link(rel), options);
+            return hrLinkCollection.fromArray(this.$links(rel)).follow(options);
           }
 
-          // This resource may not be resolved yet,
-          // so we follow a *future* link by chaining our
-          // own promise.
-          return this.$followLink(this.$promise.then(function(r) {
-            return r.$link(rel);
-          }), options);
+          var ret = [];
+          ret.$resolved = false;
+          var d = $q.defer();
+          ret.$promise = d.promise;
+          ret.$error = null;
+          var coll = new hrLinkCollection();
+          this.$promise.then(function(r) {
+            Array.prototype.push.apply(coll, r.$links(rel));
+            var resources = coll.follow(options);
+            Array.prototype.push.apply(ret, resources);
+            return resources.$promise;
+          }).then(function(r) {
+            d.resolve(ret);
+            ret.$resolved = true;
+          }, function(err) {
+            d.reject(err);
+            ret.$resolved = true;
+            ret.$error = err;
+          });
+
+          return ret;
         };
       };
 

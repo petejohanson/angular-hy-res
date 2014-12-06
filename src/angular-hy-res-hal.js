@@ -21,7 +21,7 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
           delete ret._embedded;
           return ret;
         };
-        
+
         this.linkParser = function(data, headers, Resource) {
           if (!angular.isObject(data._links)) {
             return null;
@@ -29,15 +29,16 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
 
           var ret = {};
           angular.forEach(data._links, function(val, key) {
-            if (angular.isArray(val)) {
-              var linkArray = [];
-              angular.forEach(val, function(l) {
-                linkArray.push(hrWebLinkFactory(l, Resource));
-              });
-              ret[key] = hrLinkCollection.fromArray(linkArray);
-            } else {
-              ret[key] = hrWebLinkFactory(val, Resource);
+            if (!angular.isArray(val)) {
+              val = [val];
             }
+
+            var linkArray = [];
+            angular.forEach(val, function(l) {
+              linkArray.push(hrWebLinkFactory(l, Resource));
+            });
+
+            ret[key] = hrLinkCollection.fromArray(linkArray);
           });
           return ret;
         };
