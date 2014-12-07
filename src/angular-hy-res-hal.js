@@ -44,7 +44,16 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
         };
 
         this.embeddedParser = function(data, headers) {
-          return data._embedded;
+          var ret = {};
+          angular.forEach(data._embedded || {}, function(val, key) {
+            if (!angular.isArray(val)) {
+              val = [val];
+            }
+
+            ret[key] = val;
+          });
+
+          return ret;
         };
       };
 

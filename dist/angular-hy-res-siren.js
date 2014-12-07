@@ -81,7 +81,11 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
             }
 
             for (var li = 0; li < val.rel.length; li++) {
-              ret[val.rel[li]] = val;
+              var r = val.rel[li];
+              if (!ret.hasOwnProperty(r)) {
+                ret[r] = [];
+              }
+              ret[r].unshift(val);
             }
           });
           return ret;

@@ -72,7 +72,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
           ]
         }, {});
 
-        expect(embedded.order.title).toBe('My Order #123');
+        expect(embedded.order[0].title).toBe('My Order #123');
       });
     });
 

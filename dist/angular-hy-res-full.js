@@ -51,7 +51,16 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
         };
 
         this.embeddedParser = function(data, headers) {
-          return data._embedded;
+          var ret = {};
+          angular.forEach(data._embedded || {}, function(val, key) {
+            if (!angular.isArray(val)) {
+              val = [val];
+            }
+
+            ret[key] = val;
+          });
+
+          return ret;
         };
       };
 
@@ -180,7 +189,11 @@ angular.module('angular-hy-res-siren', ['angular-hy-res'])
             }
 
             for (var li = 0; li < val.rel.length; li++) {
-              ret[val.rel[li]] = val;
+              var r = val.rel[li];
+              if (!ret.hasOwnProperty(r)) {
+                ret[r] = [];
+              }
+              ret[r].unshift(val);
             }
           });
           return ret;
@@ -311,18 +324,10 @@ angular.module('angular-hy-res', [])
           return this.$$links[rel];
         };
 
-        this.$embedded = function(rel) {
-          if (!this.$$embedded.hasOwnProperty(rel)) {
-            return null;
-          }
-
-          return this.$$embedded[rel];
-        };
-
         this.$followOne = function(rel, options) {
           // TODO: Make follow for embedded work when
           // called on unresolved resources.
-          var res = this.$embedded(rel);
+          var res = this.$sub(rel);
 
           if (res !== null) {
             return res;
@@ -358,9 +363,16 @@ angular.module('angular-hy-res', [])
         };
 
         this.$followAll = function(rel, options) {
+          var subs = this.$subs(rel);
+          if (subs.length > 0) {
+            return subs;
+          }
+
           if (this.$resolved) {
             return hrLinkCollection.fromArray(this.$links(rel)).follow(options);
           }
+
+          // TODO: Handle future embedded resources too.
 
           var ret = [];
           ret.$resolved = false;
@@ -385,6 +397,30 @@ angular.module('angular-hy-res', [])
           return ret;
         };
       };
+
+      Resource.prototype.$subs = function(rel) {
+        if (!this.$$embedded.hasOwnProperty(rel)) {
+          return [];
+        }
+
+        return this.$$embedded[rel];
+      };
+
+
+      Resource.prototype.$sub = function(rel) {
+        var ret = this.$subs(rel);
+        if (ret.length === 0) {
+          return null;
+        }
+        if (ret.length > 1) {
+          throw 'Multiple sub-resources present';
+        }
+
+        return ret[0];
+      };
+
+      Resource.prototype.$embedded = Resource.prototype.$sub;
+      Resource.prototype.$embeddeds = Resource.prototype.$subs;
 
       Resource.prototype.$$resolve = function(data, headers) {
         angular.forEach(exts, function(e) {

@@ -117,7 +117,7 @@ describe('Module: angular-hy-res', function () {
       describe('embedded resources', function () {
         var payment;
         beforeEach(function () {
-          payment = resource.$embedded('payment');
+          payment = resource.$sub('payment');
           context.resource = payment;
         });
 
@@ -135,7 +135,7 @@ describe('Module: angular-hy-res', function () {
       describe('an array of embedded resources', function () {
         var discounts;
         beforeEach(function () {
-          discounts = resource.$embedded('discounts');
+          discounts = resource.$subs('discounts');
           context.resource = discounts;
         });
 

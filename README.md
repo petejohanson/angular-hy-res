@@ -173,16 +173,36 @@ res.$links('posts')
 => hrLinkCollection [ { href: '/posts/123' }, { href: '/posts/345' } ]
 ```
 
-#### $embedded(rel)
+#### $sub(rel)
 
-This function will return either a resource, or an array of resources, for the given link relation, depending on the
-cardinality of the link relation. If the link relation is not found embedded in the resource, then `null` will be returned
-instead.
+This function will return the embedded/sub resource for the given link
+relation.  If the link relation is not found embedded in the resource, then
+`null` will be returned instead. If multiple resources are embedded for the
+link relation, then an exception will be thrown;
 
 ```javascript
-res.$follow('item')
+res.$sub('item')
 => hrResource { $resolved: true, $promise: resolved $q promise, ... various properties }
 ```
+
+#### $embedded(rel)
+
+This is an alias for `$sub`.
+
+#### $subs(rel)
+
+This function will return an array of the embedded/sub resource for the given link
+relation.  If the link relation is not found embedded in the resource, then
+an empty array will be returned instead. This function will never return `null`.
+
+```javascript
+res.$subs('item')
+=> [hrResource { $resolved: true, $promise: resolved $q promise, ... various properties }]
+```
+
+#### $embeddeds(rel)
+
+This is an alias for `$subs`.
 
 ### hrWebLink
 
@@ -306,7 +326,7 @@ angular.module('angularHyResDocs')
     };
     
     $scope.items = function() {
-      return $scope.$embedded('item');
+      return $scope.$subs('item');
     };
   });
 ```
