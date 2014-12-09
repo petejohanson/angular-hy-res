@@ -29,6 +29,17 @@ var banner = ['/**',
   ' */',
   ''].join('\n');
 
+function webpackPipe() {
+  return lazypipe()
+    .pipe(gif, /angular-hy-res-link-header.js/, gwebpack({
+      output: {
+        library: 'hrLinkHeader',
+        filename: './angular-hy-res-link-header.js',
+        libraryTarget: 'var'
+      }
+    }));
+}
+
 function jsSourcePipe() {
   return gulp.src('src/**/*.js')
     /* jshint camelcase: false */
@@ -38,13 +49,6 @@ function jsSourcePipe() {
 function getOutputPipe(pkg) {
   return lazypipe()
     .pipe(header, banner, { pkg: pkg, now: (util.date(new Date(), 'yyyy-mm-dd')) })
-    .pipe(gif, /angular-hy-res-link-header.js/, gwebpack({
-      output: {
-        library: 'hrLinkHeader',
-        filename: './angular-hy-res-link-header.js',
-        libraryTarget: 'var'
-      }
-    }))
     .pipe(gulp.dest, 'dist')
     .pipe(rename, { suffix: '.min' })
     .pipe(uglify, { preserveComments: 'some' })
@@ -61,11 +65,13 @@ function getJSHintPipe(rc) {
 
 gulp.task('js-single', ['jshint'], function () {
   return jsSourcePipe()
+    .pipe(webpackPipe()())
     .pipe(getOutputPipe(require('./package.json'))());
 });
 
 gulp.task('js-full', ['jshint'], function () {
-  return gulp.src('src/**/*.js')
+  return jsSourcePipe()
+    .pipe(webpackPipe()())
     .pipe(concat('angular-hy-res-full.js'))
     .pipe(getOutputPipe(require('./package.json'))());
 });
