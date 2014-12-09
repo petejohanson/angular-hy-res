@@ -495,8 +495,8 @@ var hrLinkHeader =
 	      return headers('Link') !== null;
 	    };
 
-	    this.dataParser = function() {
-	      return {};
+	    this.dataParser = function(data) {
+	      return data;
 	    };
 
 	    this.linkParser = function(data, headers, Resource) {
