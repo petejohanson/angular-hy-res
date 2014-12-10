@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.6 - 2014-12-08
+ * @version v0.0.6 - 2014-12-10
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -122,15 +122,12 @@ angular.module('angular-hy-res', [])
         };
 
         this.$followOne = function(rel, options) {
-          // TODO: Make follow for embedded work when
-          // called on unresolved resources.
-          var res = this.$sub(rel);
-
-          if (res !== null) {
-            return res;
-          }
-
           if (this.$resolved) {
+            var res = this.$sub(rel);
+            if (res !== null) {
+              return res;
+            }
+
             var l = this.$link(rel);
             if (l === null) {
               return null; // TODO: Return a resource w/ an error?s
@@ -139,16 +136,10 @@ angular.module('angular-hy-res', [])
             return l.follow(options);
           }
 
-          // This resource may not be resolved yet,
-          // so we follow a *future* link by chaining our
-          // own promise.
           var ret = new Resource();
           ret.$promise =
               this.$promise.then(function(r) {
-                return r.$link(rel);
-              })
-              .then(function(l) {
-                return l.follow(options).$promise;
+                return r.$followOne(rel, options).$promise;
               }).then(function(r) {
                 var promise = ret.$promise;
                 angular.copy(r, ret);
@@ -160,26 +151,23 @@ angular.module('angular-hy-res', [])
         };
 
         this.$followAll = function(rel, options) {
-          var subs = this.$subs(rel);
-          if (subs.length > 0) {
-            return subs;
-          }
-
           if (this.$resolved) {
+            var subs = this.$subs(rel);
+            if (subs.length > 0) {
+              return subs;
+            }
+
             return hrLinkCollection.fromArray(this.$links(rel)).follow(options);
           }
-
-          // TODO: Handle future embedded resources too.
 
           var ret = [];
           ret.$resolved = false;
           var d = $q.defer();
           ret.$promise = d.promise;
           ret.$error = null;
-          var coll = new hrLinkCollection();
+
           this.$promise.then(function(r) {
-            Array.prototype.push.apply(coll, r.$links(rel));
-            var resources = coll.follow(options);
+            var resources = r.$followAll(rel);
             Array.prototype.push.apply(ret, resources);
             return resources.$promise;
           }).then(function(r) {

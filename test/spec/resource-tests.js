@@ -1,4 +1,4 @@
-'use strict';
+  'use strict';
 
 var resourceAssertions = require('./resource-assertions');
 
@@ -376,6 +376,49 @@ describe('Module: angular-hy-res', function () {
       });
     });
 
+    describe('a series of $followOne calls with embedded resource', function() {
+      var profileResource;
+
+      var rawCustomer = {
+        _links: {
+          self: { href: '/customers/321' },
+          profile: { href: '/customers/321/profile' }
+        },
+        _embedded: {
+          profile: {
+            _links: {
+              self: { href: '/customers/321/profile' }
+            },
+            location: 'Anytown, USA'
+          }
+        },
+        name: 'John Wayne'
+      };
+
+      beforeEach(function() {
+        httpBackend
+          .expectGET('/customers/321')
+          .respond(rawCustomer,{'Content-Type': 'application/hal+json'});
+
+        profileResource = resource.$followOne('customer').$followOne('profile');
+        context.resource = profileResource;
+      });
+
+      resourceAssertions.unresolvedResourceBehavior(context);
+
+      describe('when the chain resolves', function() {
+        beforeEach(function() {
+          httpBackend.flush();
+        });
+
+        resourceAssertions.resolvedResourceBehavior(context);
+
+        it('should have the profile location', function() {
+          expect(profileResource.location).toBe('Anytown, USA');
+        });
+      });
+    });
+
     describe('a $followAll call on an unresolved resource', function() {
       var profileResources;
 
@@ -401,6 +444,49 @@ describe('Module: angular-hy-res', function () {
         httpBackend
           .expectGET('/customers/321/profile')
           .respond(rawProfile,{'Content-Type': 'application/hal+json'});
+
+        profileResources = resource.$followOne('customer').$followAll('profile');
+        context.resource = profileResources;
+      });
+
+      resourceAssertions.unresolvedResourceBehavior(context);
+
+      describe('when the chain resolves', function() {
+        beforeEach(function() {
+          httpBackend.flush();
+        });
+
+        resourceAssertions.resolvedResourceBehavior(context);
+
+        it('should have the profile location', function() {
+          expect(profileResources[0].location).toBe('Anytown, USA');
+        });
+      });
+    });
+
+    describe('a $followAll call on an unresolved resource with embedded items', function() {
+      var profileResources;
+
+      var rawCustomer = {
+        _links: {
+          self: { href: '/customers/321' },
+          profile: { href: '/customers/321/profile' }
+        },
+        _embedded: {
+          profile: {
+            _links: {
+              self: { href: '/customers/321/profile' }
+            },
+            location: 'Anytown, USA'
+          }
+        },
+        name: 'John Wayne'
+      };
+
+      beforeEach(function() {
+        httpBackend
+          .expectGET('/customers/321')
+          .respond(rawCustomer,{'Content-Type': 'application/hal+json'});
 
         profileResources = resource.$followOne('customer').$followAll('profile');
         context.resource = profileResources;
