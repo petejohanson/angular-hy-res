@@ -44,9 +44,13 @@ angular.module('myApp', [
     'angular-hy-res',
     'angular-hy-res-hal',
     'angular-hy-res-siren',
-    'angular-hy-res-link-header'
+    'angular-hy-res-link-header',
+    'angular-hy-res-json'
   ]);
 ```
+
+The `angular-hy-res-json` module handles data for simple `application/json` responses, with no additional
+hypermedia controls present.
 
 _In the future, integration with other hypermedia formats, e.g. Siren, Uber, JSON-LD, will be available in their own modules._
 

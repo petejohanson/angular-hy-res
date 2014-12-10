@@ -63,7 +63,7 @@ var hrLinkHeader =
 	    };
 
 	    this.dataParser = function(data) {
-	      return data;
+	      return {};
 	    };
 
 	    this.linkParser = function(data, headers, Resource) {

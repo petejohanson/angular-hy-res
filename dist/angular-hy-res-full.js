@@ -74,6 +74,31 @@ angular.module('angular-hy-res-hal', ['angular-hy-res'])
 
 'use strict';
 
+angular.module('angular-hy-res-json', ['angular-hy-res'])
+  .service('hrJsonExtension', function() {
+    this.applies = function(data, headers) {
+      return headers('Content-Type') === 'application/json';
+    };
+
+    this.dataParser = function(data) {
+      return data;
+    };
+
+    this.linkParser = function(data, headers, Resource) {
+      return {};
+    };
+
+    this.embeddedParser = function(data, headers) {
+      return [];
+    };
+  })
+  .config(['hrResourceProvider', function(hrResourceProvider) {
+    hrResourceProvider.extensions.push('hrJsonExtension');
+  }]);
+
+
+'use strict';
+
 angular.module('angular-hy-res-siren', ['angular-hy-res'])
   .provider('hrSirenExtension', function() {
     this.mediaTypes = ['application/vnd.siren+json'];
@@ -484,7 +509,7 @@ var hrLinkHeader =
 	    };
 
 	    this.dataParser = function(data) {
-	      return data;
+	      return {};
 	    };
 
 	    this.linkParser = function(data, headers, Resource) {

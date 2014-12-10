@@ -9,7 +9,7 @@ angular.module('angular-hy-res-link-header', ['angular-hy-res'])
     };
 
     this.dataParser = function(data) {
-      return data;
+      return {};
     };
 
     this.linkParser = function(data, headers, Resource) {
