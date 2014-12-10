@@ -8,7 +8,7 @@
   ],
   "main": [
     "dist/angular-hy-res.js",
-    "dist/angular-hy-res-json.js"
+    "dist/angular-hy-res-json.js",
     "dist/angular-hy-res-hal.js",
     "dist/angular-hy-res-siren.js",
     "dist/angular-hy-res-link-header.js"
