@@ -30,7 +30,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
         expect(links.order[0].href).toEqual('/orders/123');
       });
 
-      xit('should return a link array for duplicate link rels', function() {
+      it('should return a link array for duplicate link rels', function() {
         var links = hrSirenExtension.linkParser({
           links: [
             { rel: ['self'], href: '/orders/123' },
@@ -39,6 +39,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
           ]
         },{}, 200);
         expect(links.section.length).toBe(2);
+        expect(links.section[0].href).toBe('/orders?page=2');
       });
 
       it('should include sub-entity links', function() {
