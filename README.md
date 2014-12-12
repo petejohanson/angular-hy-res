@@ -311,10 +311,12 @@ Then the controller can easily be:
 ```javascript
 angular.module('angularHyResDocs')
   .controller('ahrdPageCtrl', function(root) {
-    $scope.page = root.$follow('http://api.myserver.com/rel/posts');
+    $scope.page = root.$followOne('http://api.myserver.com/rel/posts');
+    $scope.posts = $scope.page.$followAll('item');
     
     var follow = function(rel) {
-      $scope.page = $scope.page.$follow('next');
+      $scope.page = $scope.page.$followOne(rel);
+      $scope.posts = $scope.page.$followAll('item');
     };
     
     $scope.next = function() {
@@ -334,15 +336,11 @@ angular.module('angularHyResDocs')
     };
     
     $scope.hasNext = function() {
-      angular.isObject($scope.page.$link('next'));
+      return $scope.page.$if('next');
     };
     
     $scope.hasPrev = function() {
-      angular.isObject($scope.page.$link('prev'));
-    };
-    
-    $scope.items = function() {
-      return $scope.$subs('item');
+      return $scope.page.$if('prev');
     };
   });
 ```
@@ -360,7 +358,7 @@ And the view:
     </li>
   </ul>
   <ul>
-    <li ng-repeat="post in posts()">{{post.title}}</li>
+    <li ng-repeat="post in posts">{{post.title}}</li>
   </ul>
 </div>
 ```
