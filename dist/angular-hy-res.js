@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.7 - 2014-12-10
+ * @version v0.0.7 - 2014-12-12
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -206,6 +206,10 @@ angular.module('angular-hy-res', [])
 
       Resource.prototype.$embedded = Resource.prototype.$sub;
       Resource.prototype.$embeddeds = Resource.prototype.$subs;
+
+      Resource.prototype.$if = function(rel) {
+        return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
+      };
 
       Resource.prototype.$$resolve = function(data, headers) {
         angular.forEach(exts, function(e) {

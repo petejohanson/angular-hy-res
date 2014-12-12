@@ -94,7 +94,7 @@ describe('Module: angular-hy-res', function () {
 
         it('should return true if an embedded resource is present', function() {
           expect(resource.$if('payment')).toBeTruthy();
-        })
+        });
       });
 
       describe('$link', function() {
