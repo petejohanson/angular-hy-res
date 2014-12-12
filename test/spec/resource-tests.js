@@ -83,17 +83,17 @@ describe('Module: angular-hy-res', function () {
         expect(resource.type).toBe('promo');
       });
 
-      describe('$if', function() {
+      describe('$has', function() {
         it('should return false if not embedded or linked', function() {
-          expect(resource.$if('nada')).toBeFalsy();
+          expect(resource.$has('nada')).toBeFalsy();
         });
 
         it('should return true if a link is present', function() {
-          expect(resource.$if('self')).toBeTruthy();
+          expect(resource.$has('self')).toBeTruthy();
         });
 
         it('should return true if an embedded resource is present', function() {
-          expect(resource.$if('payment')).toBeTruthy();
+          expect(resource.$has('payment')).toBeTruthy();
         });
       });
 

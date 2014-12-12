@@ -208,16 +208,16 @@ res.$subs('item')
 
 This is an alias for `$subs`.
  
-#### $if(rel)
+#### $has(rel)
 
 This function will return true if there is a link or embedded resource for the given link relation,
 otherwise it will return false. The function does _not_ take into account whether the resource
 is resolved or not, so the return value may be different once the resource is resolved.
 
 ```javascript
-res.$if('item')
+res.$has('item')
 => true
-res.$if('missing')
+res.$has('missing')
 => false
 ```
 ### hrWebLink
@@ -336,11 +336,11 @@ angular.module('angularHyResDocs')
     };
     
     $scope.hasNext = function() {
-      return $scope.page.$if('next');
+      return $scope.page.$has('next');
     };
     
     $scope.hasPrev = function() {
-      return $scope.page.$if('prev');
+      return $scope.page.$has('prev');
     };
   });
 ```
