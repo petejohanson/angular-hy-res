@@ -83,6 +83,20 @@ describe('Module: angular-hy-res', function () {
         expect(resource.type).toBe('promo');
       });
 
+      describe('$if', function() {
+        it('should return false if not embedded or linked', function() {
+          expect(resource.$if('nada')).toBeFalsy();
+        });
+
+        it('should return true if a link is present', function() {
+          expect(resource.$if('self')).toBeTruthy();
+        });
+
+        it('should return true if an embedded resource is present', function() {
+          expect(resource.$if('payment')).toBeTruthy();
+        })
+      });
+
       describe('$link', function() {
         it('should return the link for single links', function() {
           expect(resource.$link('self').href).toEqual('/orders/123');

@@ -207,7 +207,19 @@ res.$subs('item')
 #### $embeddeds(rel)
 
 This is an alias for `$subs`.
+ 
+#### $if(rel)
 
+This function will return true if there is a link or embedded resource for the given link relation,
+otherwise it will return false. The function does _not_ take into account whether the resource
+is resolved or not, so the return value may be different once the resource is resolved.
+
+```javascript
+res.$if('item')
+=> true
+res.$if('missing')
+=> false
+```
 ### hrWebLink
 
 Currently, there is one implementation of the concept of a link, `hrWebLink`, which encapsulates the data and concepts
@@ -356,9 +368,7 @@ And the view:
 ## To Do
 
 * Extensions for other media types (e.g. Collection+Json, Uber)
-* Convenience function on `hrResource` to check for presence of relation in either links or embedded.
 * Hypermedia Actions/Forms? (Not present in HAL)
-* Handle following a link relation that will be an array once the given resource resolves.
 * Mixins for resources based on... profile? link relation that was followed?
 * Differentiate between embedded link vs embedded representation (See Siren spec)
 * Correct relative URI resolution for following links.

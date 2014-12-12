@@ -200,6 +200,10 @@ angular.module('angular-hy-res', [])
       Resource.prototype.$embedded = Resource.prototype.$sub;
       Resource.prototype.$embeddeds = Resource.prototype.$subs;
 
+      Resource.prototype.$if = function(rel) {
+        return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
+      };
+
       Resource.prototype.$$resolve = function(data, headers) {
         angular.forEach(exts, function(e) {
           if (!e.applies(data, headers)) {
