@@ -282,7 +282,9 @@ _Note: At this point, Siren actions are not supported._
 ## Examples
 
 A complete working example can be found at [angular-hy-res-example](https://github.com/petejohanson/angular-hy-res-example),
-which demonstrates the below pagination concept.
+which demonstrates the below pagination concept. A public copy is deployed to Heroku at:
+
+[https://angular-hy-res-example.herokuapp.com/](https://angular-hy-res-example.herokuapp.com/)
 
 For example, given a HAL collection resource that uses the standard link relations `next` and `prev` to control
 paging through the collection, and the `item` relation for each item in the collection, here is a sample response:
