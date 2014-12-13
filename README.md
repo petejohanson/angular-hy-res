@@ -367,6 +367,10 @@ And the view:
 
 ## To Do
 
+* Handle scenario where subset of links for a given link relation is embedded.
+  For this scenario, we should really return a mix of resolved embedded
+  resources and unresolved resources that result from following the non-embedded
+  links.
 * Extensions for other media types (e.g. Collection+Json, Uber)
 * Support URI schemes other than http/https (extension mechanism?)
 * Hypermedia Actions/Forms? (Not present in HAL)
