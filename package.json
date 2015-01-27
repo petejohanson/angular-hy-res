@@ -60,6 +60,6 @@
     "webpack-dev-server": "~1.6.4"
   },
   "dependencies": {
-    "hy-res": "0.0.4"
+    "hy-res": "0.0.5"
   }
 }
