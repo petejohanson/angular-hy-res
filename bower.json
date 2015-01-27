@@ -7,7 +7,7 @@
     "hal"
   ],
   "main": [
-    "dist/angular-hy-res-full.js",
+    "dist/angular-hy-res-full.js"
   ],
   "ignore": [],
   "dependencies": {
