@@ -391,7 +391,6 @@ describe('Module: angular-hy-res', function () {
         resourceAssertions.resolvedResourceBehavior(context);
 
         it('should have the profile location', function() {
-console.log(profileResource.$promise);
           profileResource.$promise.should.eventually.have.property('location', 'Anytown, USA');
         });
       });
@@ -434,8 +433,7 @@ console.log(profileResource.$promise);
 
         resourceAssertions.resolvedResourceBehavior(context);
 
-        it('should have the profile location', function(done) {
-console.log(profileResource.$promise);
+        it('should have the profile location', function() {
           profileResource.$promise.should.eventually.have.property('location', 'Anytown, USA');
         });
       });
@@ -480,7 +478,7 @@ console.log(profileResource.$promise);
 
         resourceAssertions.resolvedResourceBehavior(context);
 
-        it('should have the profile location', function(done) {
+        it('should have the profile location', function() {
           profileResources.$promise.should.eventually.have.deep.property('[0].location', 'Anytown, USA');
         });
       });
@@ -524,7 +522,6 @@ console.log(profileResource.$promise);
         resourceAssertions.resolvedResourceBehavior(context);
 
         it('should have the profile location', function() {
-console.log(profileResources.$promise);
           profileResources.$promise.should.eventually.have.deep.property('[0].location', 'Anytown, USA');
         });
       });
