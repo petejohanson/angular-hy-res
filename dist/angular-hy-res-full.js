@@ -5,78 +5,7 @@
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-'use strict';
-
-var Hal = require('hy-res').HalExtension;
-
-angular.module('angular-hy-res-hal', ['angular-hy-res'])
-  .provider('hrHalExtension', function() {
-    this.mediaTypes = [];
-    this.$get = function() {
-      return new Hal(this.mediaTypes);
-    };
-  })
-  .config(['hrRootProvider', function(hrRootProvider) {
-    hrRootProvider.extensions.push('hrHalExtension');
-  }]);
-
-
-'use strict';
-
-var Json = require('hy-res').JsonExtension;
-
-angular.module('angular-hy-res-json', ['angular-hy-res'])
-  .service('hrJsonExtension', function() {
-    return new Json();
-  }).config(['hrRootProvider', function(hrRootProvider) {
-    hrRootProvider.extensions.push('hrJsonExtension');
-  }]);
-
-
-'use strict';
-
-var Siren = require('hy-res').SirenExtension;
-
-angular.module('angular-hy-res-siren', ['angular-hy-res'])
-  .provider('hrSirenExtension', function() {
-    this.mediaTypes = [];
-    this.$get = function() {
-      return new Siren(this.mediaTypes);
-    };
-  })
-  .config(['hrRootProvider', function(hrRootProvider) {
-    hrRootProvider.extensions.push('hrSirenExtension');
-  }]);
-
-'use strict';
-
-var HyRes = require('hy-res');
-
-angular.module('angular-hy-res', [])
-  .factory('hrHttp', ['$http', function($http) {
-    return function(options) {
-      return $http(options).then(function(resp) {
-        resp.headers = resp.headers();
-        return resp;
-      });
-    };
-  }])
-  .provider('hrRoot', function() {
-    this.extensions = [];
-    this.$get = ['hrHttp', '$injector', function(hrHttp, $injector) {
-      var exts = [];
-      angular.forEach(this.extensions, function(val) {
-        exts.push($injector.get(val));
-      });
-      return function(url, options) {
-        this.follow = function() {
-          return new HyRes.Root(url, hrHttp, exts).follow(options);
-        };
-      };
-    }];
-  });
-
-var hrLinkHeader =
+var hrRoot =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -123,9 +52,58 @@ var hrLinkHeader =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
+	__webpack_require__(1);
+	__webpack_require__(2);
+	__webpack_require__(3);
+	__webpack_require__(4);
+	module.exports = __webpack_require__(5);
+
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
-	var LinkHeader = __webpack_require__(1).LinkHeaderExtension;
+	var Hal = __webpack_require__(6).HalExtension;
+
+	angular.module('angular-hy-res-hal', ['angular-hy-res'])
+	  .provider('hrHalExtension', function() {
+	    this.mediaTypes = [];
+	    this.$get = function() {
+	      return new Hal(this.mediaTypes);
+	    };
+	  })
+	  .config(['hrRootProvider', function(hrRootProvider) {
+	    hrRootProvider.extensions.push('hrHalExtension');
+	  }]);
+
+
+
+/***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var Json = __webpack_require__(6).JsonExtension;
+
+	angular.module('angular-hy-res-json', ['angular-hy-res'])
+	  .service('hrJsonExtension', function() {
+	    return new Json();
+	  }).config(['hrRootProvider', function(hrRootProvider) {
+	    hrRootProvider.extensions.push('hrJsonExtension');
+	  }]);
+
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var LinkHeader = __webpack_require__(6).LinkHeaderExtension;
 
 	angular.module('angular-hy-res-link-header', ['angular-hy-res'])
 	  .service('hrLinkHeaderExtension', function() {
@@ -138,27 +116,80 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 1 */
-/***/ function(module, exports, __webpack_require__) {
-
-	
-	module.exports = {
-	  Root: __webpack_require__(2),
-	  HalExtension: __webpack_require__(3),
-	  JsonExtension: __webpack_require__(4),
-	  LinkHeaderExtension: __webpack_require__(5),
-	  SirenExtension: __webpack_require__(6),
-	};
-
-
-/***/ },
-/* 2 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(11);
-	var WebLink = __webpack_require__(7);
+	var Siren = __webpack_require__(6).SirenExtension;
+
+	angular.module('angular-hy-res-siren', ['angular-hy-res'])
+	  .provider('hrSirenExtension', function() {
+	    this.mediaTypes = [];
+	    this.$get = function() {
+	      return new Siren(this.mediaTypes);
+	    };
+	  })
+	  .config(['hrRootProvider', function(hrRootProvider) {
+	    hrRootProvider.extensions.push('hrSirenExtension');
+	  }]);
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var HyRes = __webpack_require__(6);
+
+	angular.module('angular-hy-res', [])
+	  .factory('hrHttp', function($http) {
+	    return function(options) {
+	      return $http(options).then(function(resp) {
+	        resp.headers = resp.headers();
+	        return resp;
+	      });
+	    };
+	  })
+	  .provider('hrRoot', function() {
+	    this.extensions = [];
+	    this.$get = function(hrHttp, $injector) {
+	      var exts = [];
+	      angular.forEach(this.extensions, function(val) {
+	        exts.push($injector.get(val));
+	      });
+	      return function(url, options) {
+	        this.follow = function() {
+	          return new HyRes.Root(url, hrHttp, exts).follow(options);
+	        };
+	      };
+	    };
+	  });
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	module.exports = {
+	  Root: __webpack_require__(7),
+	  HalExtension: __webpack_require__(8),
+	  JsonExtension: __webpack_require__(9),
+	  LinkHeaderExtension: __webpack_require__(10),
+	  SirenExtension: __webpack_require__(11),
+	};
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _ = __webpack_require__(16);
+	var WebLink = __webpack_require__(12);
 
 	var Root = function(url, http, extensions) {
 	  _.forEach(extensions, function(e) { e.initialize(http, extensions); });
@@ -173,14 +204,14 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 3 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(11);
-	var WebLink = __webpack_require__(7);
-	var LinkCollection = __webpack_require__(8);
+	var _ = __webpack_require__(16);
+	var WebLink = __webpack_require__(12);
+	var LinkCollection = __webpack_require__(13);
 
 	var HalExtension = function(mediaTypes) {
 	  var http, extensions;
@@ -255,7 +286,7 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 4 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -289,15 +320,15 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 5 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var httpLink = __webpack_require__(10);
+	var httpLink = __webpack_require__(15);
 
-	var _ = __webpack_require__(11);
-	var WebLink = __webpack_require__(7);
+	var _ = __webpack_require__(16);
+	var WebLink = __webpack_require__(12);
 
 	var LinkHeaderExtension = function() {
 	  var http, extensions;
@@ -342,14 +373,14 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 6 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(11);
-	var WebLink = __webpack_require__(7);
-	var LinkCollection = __webpack_require__(8);
+	var _ = __webpack_require__(16);
+	var WebLink = __webpack_require__(12);
+	var LinkCollection = __webpack_require__(13);
 
 	var SirenExtension = function(mediaTypes) {
 	  var http, extensions;
@@ -449,14 +480,14 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 7 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(11);
-	var Resource = __webpack_require__(9);
-	var UriTemplate = __webpack_require__(12);
+	var _ = __webpack_require__(16);
+	var Resource = __webpack_require__(14);
+	var UriTemplate = __webpack_require__(17);
 
 	var WebLink = function(data, http, extensions) {
 	  _.extend(this, data);
@@ -486,7 +517,7 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 8 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -536,13 +567,13 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 9 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var _ = __webpack_require__(11);
-	var LinkCollection = __webpack_require__(8);
+	var _ = __webpack_require__(16);
+	var LinkCollection = __webpack_require__(13);
 
 	var Resource = function(extensions) {
 	  this.$resolved = false;
@@ -710,7 +741,7 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 10 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function() {
@@ -883,7 +914,7 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 11 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {/**
@@ -8044,10 +8075,10 @@ var hrLinkHeader =
 	  }
 	}.call(this));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(13)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module), (function() { return this; }())))
 
 /***/ },
-/* 12 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*global unescape, module, define, window, global*/
@@ -8938,7 +8969,7 @@ var hrLinkHeader =
 
 
 /***/ },
-/* 13 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module) {

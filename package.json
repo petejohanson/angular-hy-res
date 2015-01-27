@@ -60,6 +60,6 @@
     "webpack-dev-server": "~1.6.4"
   },
   "dependencies": {
-    "hy-res": "git://github.com/petejohanson/hy-res.git"
+    "hy-res": "0.0.3"
   }
 }

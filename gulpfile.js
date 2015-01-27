@@ -29,17 +29,6 @@ var banner = ['/**',
   ' */',
   ''].join('\n');
 
-function webpackPipe() {
-  return lazypipe()
-    .pipe(gif, /angular-hy-res-link-header.js/, gwebpack({
-      output: {
-        library: 'hrLinkHeader',
-        filename: './angular-hy-res-link-header.js',
-        libraryTarget: 'var'
-      }
-    }));
-}
-
 function jsSourcePipe() {
   return gulp.src('src/**/*.js')
     /* jshint camelcase: false */
@@ -65,14 +54,18 @@ function getJSHintPipe(rc) {
 
 gulp.task('js-single', ['jshint'], function () {
   return jsSourcePipe()
-    .pipe(webpackPipe()())
     .pipe(getOutputPipe(require('./package.json'))());
 });
 
 gulp.task('js-full', ['jshint'], function () {
   return jsSourcePipe()
-    .pipe(webpackPipe()())
-    .pipe(concat('angular-hy-res-full.js'))
+    .pipe(gwebpack({
+      output: {
+        library: 'hrRoot',
+        filename: 'angular-hy-res-full.js',
+        libraryTarget: 'var'
+      }
+    }))
     .pipe(getOutputPipe(require('./package.json'))());
 });
 
