@@ -1,6 +1,16 @@
-  'use strict';
+'use strict';
 
-var resourceAssertions = require('./resource-assertions');
+/*jshint expr: true*/
+
+require('es6-promise').polyfill();
+
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+
+var should = chai.should();
+chai.use(chaiAsPromised);
+
+var resourceAssertions = require('../resource-assertions');
 
 describe('Module: angular-hy-res', function () {
   var hrResource, httpBackend, rootScope;
@@ -64,7 +74,7 @@ describe('Module: angular-hy-res', function () {
 
       httpBackend
         .expectGET('/orders/123')
-        .respond(raw,{'Content-Type': 'application/hal+json'});
+        .respond(raw,{'content-type': 'application/hal+json'});
       resource = new hrResource('/orders/123').follow();
       context.resource = resource;
       context.rootScope = rootScope;
@@ -75,56 +85,57 @@ describe('Module: angular-hy-res', function () {
     describe('a resolved resource', function() {
       beforeEach(function () {
         httpBackend.flush();
+
       });
 
       resourceAssertions.resolvedResourceBehavior(context);
 
       it('should contain the parsed properties', function () {
-        expect(resource.type).toBe('promo');
+        resource.$promise.should.eventually.have.property('type', 'promo');
       });
 
       describe('$has', function() {
         it('should return false if not embedded or linked', function() {
-          expect(resource.$has('nada')).toBeFalsy();
+          resource.$has('nada').should.be.false;
         });
 
         it('should return true if a link is present', function() {
-          expect(resource.$has('self')).toBeTruthy();
+          resource.$has('self').should.be.true;
         });
 
         it('should return true if an embedded resource is present', function() {
-          expect(resource.$has('payment')).toBeTruthy();
+          resource.$has('payment').should.be.true;
         });
       });
 
       describe('$link', function() {
         it('should return the link for single links', function() {
-          expect(resource.$link('self').href).toEqual('/orders/123');
+          resource.$link('self').href.should.eql('/orders/123');
         });
 
         it('should return null for a rel not present', function() {
-          expect(resource.$link('blah')).toBeNull();
+          should.not.exist(resource.$link('blah'));
         });
 
         it('should throw an exception for a multiple valued rel', function() {
-          expect(function() { resource.$link('stores'); }).toThrow();
+          should.Throw(function() { resource.$link('stores'); });
         });
       });
 
       describe('$links', function() {
         it('should return the links for single links', function() {
           var links = resource.$links('self');
-          expect(links.length).toBe(1);
-          expect(resource.$links('self')[0].href).toEqual('/orders/123');
+          links.length.should.eql(1);
+          resource.$links('self')[0].href.should.eql('/orders/123');
         });
 
         it('should return empty array for a rel not present', function() {
-          expect(resource.$links('blah')).toEqual([]);
+          resource.$links('blah').should.eql([]);
         });
 
         it('should return an array for multiple links present', function() {
           var links = resource.$links('stores');
-          expect(links.length).toBe(2);
+          links.length.should.eql(2);
         });
       });
 
@@ -138,11 +149,11 @@ describe('Module: angular-hy-res', function () {
         resourceAssertions.resolvedResourceBehavior(context);
 
         it('should not be null', function () {
-          expect(payment).not.toBeNull();
+          payment.should.not.be.null;
         });
 
         it('should have the basic properties', function () {
-          expect(payment.amount).toBe('$10.50');
+          payment.amount.should.eql('$10.50');
         });
       });
 
@@ -154,7 +165,7 @@ describe('Module: angular-hy-res', function () {
         });
 
         it('should contain two resources', function () {
-          expect(discounts.length).toBe(2);
+          discounts.length.should.eql(2);
         });
 
         it('should contain resolved resources', function () {
@@ -164,17 +175,13 @@ describe('Module: angular-hy-res', function () {
           }
         });
 
-        it('should have a resolved $promise on the array', function (done) {
-          discounts.$promise.then(function (a) {
-            expect(a).toBe(discounts);
-            done();
-          });
-
+        it('should have a resolved $promise on the array', function () {
           rootScope.$apply();
+          discounts.$promise.should.eventually.eql(discounts);
         });
 
         it('should have a true $resolved property', function () {
-          expect(discounts.$resolved).toBe(true);
+          discounts.$resolved.should.eql(true);
         });
       });
 
@@ -192,7 +199,7 @@ describe('Module: angular-hy-res', function () {
           beforeEach(function () {
             httpBackend
               .expectGET('/customers/321')
-              .respond(raw, {'Content-Type': 'application/hal+json'});
+              .respond(raw, {'content-type': 'application/hal+json'});
             customerResource = resource.$followOne('customer');
             context.resource = customerResource;
           });
@@ -207,7 +214,7 @@ describe('Module: angular-hy-res', function () {
             resourceAssertions.resolvedResourceBehavior(context);
 
             it('should have the raw properties', function () {
-              expect(customerResource.name).toBe('John Wayne');
+              customerResource.$promise.should.eventually.have.property('name', 'John Wayne');
             });
           });
         });
@@ -223,7 +230,7 @@ describe('Module: angular-hy-res', function () {
           resourceAssertions.resolvedResourceBehavior(context);
 
           it ('should have the embedded resource properties', function() {
-            expect(shippingResource.street1).toBe('123 Wilkes Lane');
+            shippingResource.street1.should.eql('123 Wilkes Lane');
           });
         });
       });
@@ -235,19 +242,19 @@ describe('Module: angular-hy-res', function () {
             var rawStore = {};
             httpBackend
               .expectGET('/stores/123')
-              .respond(rawStore, {'Content-Type': 'application/hal+json'});
+              .respond(rawStore, {'content-type': 'application/hal+json'});
             httpBackend
               .expectGET('/stores/456')
-              .respond(rawStore, {'Content-Type': 'application/hal+json'});
+              .respond(rawStore, {'content-type': 'application/hal+json'});
             stores = resource.$followAll('stores');
           });
 
           it('has a false $resolved', function() {
-            expect(stores.$resolved).toBe(false);
+            stores.$resolved.should.be.false;
           });
 
           it('has a length of 2', function() {
-            expect(stores.length).toBe(2);
+            stores.length.should.eql(2);
           });
 
           it('is an array of unresolved resources', function() {
@@ -263,16 +270,15 @@ describe('Module: angular-hy-res', function () {
             });
 
             it('has a true $resolved property', function() {
-              expect(stores.$resolved).toBe(true);
+              rootScope.$digest();
+
+              stores.$promise.should.eventually.have.property('$resolved', true);
             });
 
-            it('has a $promise that returns the array that completes', function(done) {
-              stores.$promise.then(function(s) {
-                expect(s).toEqual(stores);
-                done();
-              });
+            it('has a $promise that returns the array that completes', function() {
+              rootScope.$digest();
 
-              rootScope.$apply();
+              stores.$promise.should.eventually.eql(stores);
             });
           });
         });
@@ -291,7 +297,7 @@ describe('Module: angular-hy-res', function () {
         beforeEach(function() {
           httpBackend
             .expectGET('/customers/321')
-            .respond(raw,{'Content-Type': 'application/hal+json'});
+            .respond(raw,{'content-type': 'application/hal+json'});
           var link = resource.$link('customer');
           customerResource = link.follow();
           context.resource = customerResource;
@@ -307,7 +313,7 @@ describe('Module: angular-hy-res', function () {
           resourceAssertions.resolvedResourceBehavior(context);
 
           it('should have the raw properties', function() {
-            expect(customerResource.name).toBe('John Wayne');
+            customerResource.$promise.should.eventually.have.property('name', 'John Wayne');
           });
         });
       });
@@ -325,7 +331,7 @@ describe('Module: angular-hy-res', function () {
         beforeEach(function() {
           httpBackend
             .expectGET('/customers/666')
-            .respond(raw,{'Content-Type': 'application/hal+json'});
+            .respond(raw,{'content-type': 'application/hal+json'});
           customerResource = resource.$followOne('customer-search', { data: { id: '666' } });
           context.resource = customerResource;
         });
@@ -340,7 +346,7 @@ describe('Module: angular-hy-res', function () {
           resourceAssertions.resolvedResourceBehavior(context);
 
           it('should have the raw properties', function() {
-            expect(customerResource.name).toBe('Bruce Lee');
+            customerResource.$promise.should.eventually.have.property('name', 'Bruce Lee');
           });
         });
       });
@@ -366,10 +372,10 @@ describe('Module: angular-hy-res', function () {
       beforeEach(function() {
         httpBackend
           .expectGET('/customers/321')
-          .respond(rawCustomer,{'Content-Type': 'application/hal+json'});
+          .respond(rawCustomer,{'content-type': 'application/hal+json'});
         httpBackend
           .expectGET('/customers/321/profile')
-          .respond(rawProfile,{'Content-Type': 'application/hal+json'});
+          .respond(rawProfile,{'content-type': 'application/hal+json'});
 
         profileResource = resource.$followOne('customer').$followOne('profile');
         context.resource = profileResource;
@@ -385,7 +391,8 @@ describe('Module: angular-hy-res', function () {
         resourceAssertions.resolvedResourceBehavior(context);
 
         it('should have the profile location', function() {
-          expect(profileResource.location).toBe('Anytown, USA');
+console.log(profileResource.$promise);
+          profileResource.$promise.should.eventually.have.property('location', 'Anytown, USA');
         });
       });
     });
@@ -412,7 +419,7 @@ describe('Module: angular-hy-res', function () {
       beforeEach(function() {
         httpBackend
           .expectGET('/customers/321')
-          .respond(rawCustomer,{'Content-Type': 'application/hal+json'});
+          .respond(rawCustomer,{'content-type': 'application/hal+json'});
 
         profileResource = resource.$followOne('customer').$followOne('profile');
         context.resource = profileResource;
@@ -427,8 +434,9 @@ describe('Module: angular-hy-res', function () {
 
         resourceAssertions.resolvedResourceBehavior(context);
 
-        it('should have the profile location', function() {
-          expect(profileResource.location).toBe('Anytown, USA');
+        it('should have the profile location', function(done) {
+console.log(profileResource.$promise);
+          profileResource.$promise.should.eventually.have.property('location', 'Anytown, USA');
         });
       });
     });
@@ -454,10 +462,10 @@ describe('Module: angular-hy-res', function () {
       beforeEach(function() {
         httpBackend
           .expectGET('/customers/321')
-          .respond(rawCustomer,{'Content-Type': 'application/hal+json'});
+          .respond(rawCustomer,{'content-type': 'application/hal+json'});
         httpBackend
           .expectGET('/customers/321/profile')
-          .respond(rawProfile,{'Content-Type': 'application/hal+json'});
+          .respond(rawProfile,{'content-type': 'application/hal+json'});
 
         profileResources = resource.$followOne('customer').$followAll('profile');
         context.resource = profileResources;
@@ -472,8 +480,8 @@ describe('Module: angular-hy-res', function () {
 
         resourceAssertions.resolvedResourceBehavior(context);
 
-        it('should have the profile location', function() {
-          expect(profileResources[0].location).toBe('Anytown, USA');
+        it('should have the profile location', function(done) {
+          profileResources.$promise.should.eventually.have.deep.property('[0].location', 'Anytown, USA');
         });
       });
     });
@@ -500,7 +508,7 @@ describe('Module: angular-hy-res', function () {
       beforeEach(function() {
         httpBackend
           .expectGET('/customers/321')
-          .respond(rawCustomer,{'Content-Type': 'application/hal+json'});
+          .respond(rawCustomer,{'content-type': 'application/hal+json'});
 
         profileResources = resource.$followOne('customer').$followAll('profile');
         context.resource = profileResources;
@@ -516,7 +524,8 @@ describe('Module: angular-hy-res', function () {
         resourceAssertions.resolvedResourceBehavior(context);
 
         it('should have the profile location', function() {
-          expect(profileResources[0].location).toBe('Anytown, USA');
+console.log(profileResources.$promise);
+          profileResources.$promise.should.eventually.have.deep.property('[0].location', 'Anytown, USA');
         });
       });
     });

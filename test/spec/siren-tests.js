@@ -1,5 +1,15 @@
 'use strict';
 
+/*jshint expr: true*/
+
+require('es6-promise').polyfill();
+
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+
+var should = chai.should();
+chai.use(chaiAsPromised);
+
 describe('angular-hy-res: hrSirenExtension', function () {
   describe('the extension', function() {
     var hrSirenExtension;
@@ -13,21 +23,19 @@ describe('angular-hy-res: hrSirenExtension', function () {
 
     describe('extension applicability', function() {
       it('should apply to application/vnd.siren+json content type', function() {
-        expect(hrSirenExtension.applies({}, function(header) {
-          return header === 'Content-Type' ? 'application/vnd.siren+json' : null;
-        }, 200)).toBe(true);
+        hrSirenExtension.applies({}, { 'content-type': 'application/vnd.siren+json' }).should.be.true;
       });
     });
     describe('links parser', function() {
       it('should return the basic link', function() {
         var links = hrSirenExtension.linkParser({links: [ { rel: ['self'], href: '/orders/123' } ] }, {}, 200);
-        expect(links.self[0].href).toEqual('/orders/123');
+        links.self[0].href.should.eql('/orders/123');
       });
 
       it('should return link for each relation in rel array', function() {
         var links = hrSirenExtension.linkParser({links: [ { rel: ['self', 'order'], href: '/orders/123' } ] }, {}, 200);
-        expect(links.self[0].href).toEqual('/orders/123');
-        expect(links.order[0].href).toEqual('/orders/123');
+        links.self[0].href.should.eql('/orders/123');
+        links.order[0].href.should.eql('/orders/123');
       });
 
       it('should return a link array for duplicate link rels', function() {
@@ -38,8 +46,8 @@ describe('angular-hy-res: hrSirenExtension', function () {
             { rel: ['section'], href: '/orders?page=3' }
           ]
         },{}, 200);
-        expect(links.section.length).toBe(2);
-        expect(links.section[0].href).toBe('/orders?page=2');
+        links.section.length.should.eql(2);
+        links.section[0].href.should.eql('/orders?page=2');
       });
 
       it('should include sub-entity links', function() {
@@ -55,7 +63,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
           ]
         }, {}, 200);
 
-        expect(links.order[0].href).toBe('/orders/123');
+        links.order[0].href.should.eql('/orders/123');
       });
     });
 
@@ -73,7 +81,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
           ]
         }, {});
 
-        expect(embedded.order[0].title).toBe('My Order #123');
+        embedded.order[0].title.should.eql('My Order #123');
       });
     });
 
@@ -86,7 +94,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
           }
         }, {});
 
-        expect(data).toEqual({ name: 'John Doe' });
+        data.should.eql({ name: 'John Doe' });
       });
 
       it('should include the title, if present', function() {
@@ -98,7 +106,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
           title: 'My Order #123'
         }, {});
 
-        expect(data).toEqual({
+        data.should.eql({
           name: 'John Doe',
           title: 'My Order #123'
         });
@@ -113,9 +121,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
       });
 
       inject(function(hrSirenExtension) {
-        expect(hrSirenExtension.applies({}, function(header) {
-          return header === 'Content-Type' ? 'application/vnd.myco.blog' : null;
-        })).toBeTruthy();
+        hrSirenExtension.applies({}, { 'content-type': 'application/vnd.myco.blog' }).should.be.true;
       });
     });
   });

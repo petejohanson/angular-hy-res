@@ -1,5 +1,13 @@
 'use strict';
 
+/*jshint expr: true*/
+
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+
+chai.should();
+chai.use(chaiAsPromised);
+
 describe('angular-hy-res: hrHalExtension', function () {
   describe('the extension', function() {
     var hrHalExtension;
@@ -13,15 +21,13 @@ describe('angular-hy-res: hrHalExtension', function () {
 
     describe('extension applicability', function() {
       it('should apply to application/hal+json content type', function() {
-        expect(hrHalExtension.applies({}, function(header) {
-          return header === 'Content-Type' ? 'application/hal+json' : null;
-        }, 200)).toBe(true);
+        hrHalExtension.applies({}, { 'content-type': 'application/hal+json' }).should.be.true;
       });
     });
     describe('links parser', function() {
       it('should return the links', function() {
         var links = hrHalExtension.linkParser({_links: { self: { href: '/orders/123' } } }, {}, 200);
-        expect(links.self[0].href).toEqual('/orders/123');
+        links.self[0].href.should.eql('/orders/123');
       });
     });
 
@@ -32,7 +38,7 @@ describe('angular-hy-res: hrHalExtension', function () {
           name: 'John Doe'
         }, {});
 
-        expect(data).toEqual({ name: 'John Doe' });
+        data.should.eql({ name: 'John Doe' });
       });
     });
   });
@@ -44,9 +50,7 @@ describe('angular-hy-res: hrHalExtension', function () {
       });
 
       inject(function(hrHalExtension) {
-        expect(hrHalExtension.applies({}, function(header) {
-          return header === 'Content-Type' ? 'application/vnd.myco.blog' : null;
-        })).toBeTruthy();
+        hrHalExtension.applies({}, { 'content-type': 'application/vnd.myco.blog' }).should.be.true;
       });
     });
   });

@@ -1,7 +1,10 @@
-/**
- * Created by peter on 9/18/14.
- */
 'use strict';
+
+/*jshint expr: true*/
+
+var chai = require('chai');
+
+var should = chai.should();
 
 module.exports.unresolvedResourceBehavior = function(context) {
   describe('(shared)', function() {
@@ -10,15 +13,15 @@ module.exports.unresolvedResourceBehavior = function(context) {
     });
 
     it('should not be $resolved', function() {
-      expect(this.resource.$resolved).toBe(false);
+      this.resource.$resolved.should.be.false;
     });
 
     it('should have a $promise', function() {
-      expect(this.resource.$promise).not.toBe(null);
+      this.resource.$promise.should.not.be.null;
     });
 
     it('should not have an $error', function() {
-      expect(this.resource.$error).toBeNull();
+      should.not.exist(this.resource.$error);
     });
   });
 };
@@ -31,21 +34,16 @@ module.exports.resolvedResourceBehavior = function(context) {
     });
 
     it('should be $resolved', function() {
-      expect(this.resource.$resolved).toBe(true);
+      this.resource.$promise.should.eventually.have.property('$resolved', true);
     });
 
     it('should not have an $error', function() {
-      expect(this.resource.$error).toBe(null);
+      this.resource.$promise.should.eventually.have.property('$error', null);
     });
 
-    it('should have a completed promise', function(done) {
-      var res = this.resource;
-      this.resource.$promise.then(function(r) {
-        expect(res).toBe(r);
-        done();
-      });
-
+    it('should have a completed promise', function() {
       this.rootScope.$digest();
+      this.resource.$promise.should.eventually.eql(this.resource);
     });
   });
 };

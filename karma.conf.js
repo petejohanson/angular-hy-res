@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['mocha', 'es5-shim'],
 
 
     // list of files / patterns to load in the browser
@@ -20,21 +20,24 @@ module.exports = function(config) {
       'bower_components/uri.js/src/URI.js',
       'bower_components/uri.js/src/URITemplate.js',
       'src/**/*.js',
-      'test/spec/**/*-tests.js'
+      'test/spec/**/*.js'
     ],
 
 
     // list of files to exclude
     exclude: [
-
     ],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'src/angular-hy-res-link-header.js': ['webpack'],
-      'test/**/*-tests.js': ['webpack']
+      'src/*.js': ['webpack', 'sourcemap'],
+      'test/spec/**/*.js': ['webpack', 'sourcemap']
+    },
+
+    webpack: {
+      devtool: 'inline-source-map'
     },
 
 
