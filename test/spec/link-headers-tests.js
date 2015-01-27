@@ -16,7 +16,7 @@ describe('angular-hy-res: hrLinkHeaderExtension', function () {
 
   describe('extension applicability', function() {
     it('should apply when Link header(s) found', function() {
-      hrLinkHeaderExtension.applies({}, { 'Link': '</posts?page=2>; rel=next' }).should.be.true;
+      hrLinkHeaderExtension.applies({}, { 'link': '</posts?page=2>; rel=next' }).should.be.true;
     });
   });
 });
