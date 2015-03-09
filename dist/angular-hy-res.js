@@ -1,30 +1,30 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.10 - 2015-03-08
+ * @version v0.0.10 - 2015-03-09
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-'use strict';
+"use strict";
 
-var WebLink = function(data, $http, Resource, URITemplate) {
+var WebLink = function WebLink(data, $http, Resource, URITemplate) {
   angular.extend(this, data);
   this.$$http = $http;
   this.$$Resource = Resource;
   this.$$URITemplate = URITemplate;
 };
 
-WebLink.prototype.follow = function(options) {
+WebLink.prototype.follow = function (options) {
   var url = this.href;
 
   if (this.templated) {
     url = new this.$$URITemplate(url).expand(options.data);
   }
 
-  options = (options || {});
-  options.headers = (options.headers || {});
+  options = options || {};
+  options.headers = options.headers || {};
 
-  if(this.type && !options.headers.Accept) {
+  if (this.type && !options.headers.Accept) {
     options.headers.Accept = this.type;
   }
 
@@ -32,240 +32,244 @@ WebLink.prototype.follow = function(options) {
   return this.$$Resource.fromRequest(this.$$http(httpConfig));
 };
 
+angular.module("angular-hy-res", []).factory("URITemplate", ["$window", function ($window) {
+  return $window.URITemplate;
+}]).constant("hrWebLink", WebLink).factory("hrLinkCollection", ["$q", function ($q) {
+  function LinkCollection() {
+    var coll = Object.create(Array.prototype);
+    coll = Array.apply(coll, arguments) || coll;
 
+    LinkCollection.injectClassMethods(coll);
+    return coll;
+  }
 
-angular.module('angular-hy-res', [])
-  .factory('URITemplate', ['$window', function($window) {
-    return $window.URITemplate;
-  }])
-  .constant('hrWebLink', WebLink)
-  .factory('hrLinkCollection', ['$q', function($q) {
-    function LinkCollection() {
-      var coll = Object.create(Array.prototype);
-      coll = (Array.apply(coll, arguments) || coll);
-
-      LinkCollection.injectClassMethods(coll);
-      return (coll);
+  LinkCollection.injectClassMethods = function (c) {
+    for (var method in LinkCollection.prototype) {
+      if (LinkCollection.prototype.hasOwnProperty(method)) {
+        c[method] = LinkCollection.prototype[method];
+      }
     }
 
-    LinkCollection.injectClassMethods = function(c) {
-      for (var method in LinkCollection.prototype) {
-        if (LinkCollection.prototype.hasOwnProperty(method)) {
-          c[method] = LinkCollection.prototype[method];
-        }
-      }
+    return c;
+  };
 
-      return c;
-    };
+  LinkCollection.fromArray = function (links) {
+    return LinkCollection.apply(null, links);
+  };
 
-    LinkCollection.fromArray = function(links) {
-      return LinkCollection.apply(null, links);
-    };
-
-    LinkCollection.prototype = {
-      follow:  function(options) {
-        var res = this.map(function(l) {
-          return l.follow(options);
-        });
-        res.$promise = $q.all(res.map(function(r) { return r.$promise; }));
-        res.$resolved = false;
-        res.$promise.then(function(r) {
-          res.$resolved = true;
-        }, function(err) {
-          res.$resolved = true;
-          res.$error = err;
-        });
-
-        return res;
-      }
-    };
-
-    return (LinkCollection);
-  }])
-  .factory('hrWebLinkFactory', ['hrWebLink', '$http', 'URITemplate', function(hrWebLink, $http, URITemplate) {
-    return function(data, resource) {
-      return new hrWebLink(data, $http, resource, URITemplate);
-    };
-  }])
-  .provider('hrResource', function() {
-    this.extensions = [];
-    this.$get = ['$http', '$q', 'URITemplate', 'hrLinkCollection', '$injector', function($http, $q, URITemplate, hrLinkCollection, $injector) {
-      var exts = [];
-      angular.forEach(this.extensions, function(e) {
-        exts.push($injector.get(e));
+  LinkCollection.prototype = {
+    follow: function follow(options) {
+      var res = this.map(function (l) {
+        return l.follow(options);
+      });
+      res.$promise = $q.all(res.map(function (r) {
+        return r.$promise;
+      }));
+      res.$resolved = false;
+      res.$promise.then(function (r) {
+        res.$resolved = true;
+      }, function (err) {
+        res.$resolved = true;
+        res.$error = err;
       });
 
-      var Resource = function() {
-        this.$resolved = false;
-        this.$error = null;
-        this.$$links = {};
-        this.$$embedded = {};
+      return res;
+    }
+  };
 
-        this.$link = function(rel) {
-          var ret = this.$links(rel);
-          if (ret.length === 0) {
-            return null;
-          }
-          if (ret.length > 1) {
-            throw 'Multiple links present';
-          }
+  return LinkCollection;
+}]).factory("hrWebLinkFactory", ["hrWebLink", "$http", "URITemplate", function (hrWebLink, $http, URITemplate) {
+  return function (data, resource) {
+    return new hrWebLink(data, $http, resource, URITemplate);
+  };
+}]).provider("hrResource", function () {
+  this.extensions = [];
+  this.$get = ["$http", "$q", "URITemplate", "hrLinkCollection", "$injector", function ($http, $q, URITemplate, hrLinkCollection, $injector) {
+    var exts = [];
+    angular.forEach(this.extensions, function (e) {
+      exts.push($injector.get(e));
+    });
 
-          return ret[0];
-        };
-
-        this.$links = function(rel) {
-          if (!this.$$links.hasOwnProperty(rel)) {
-            return [];
-          }
-
-          return this.$$links[rel];
-        };
-
-        this.$followOne = function(rel, options) {
-          if (this.$resolved) {
-            var res = this.$sub(rel);
-            if (res !== null) {
-              return res;
-            }
-
-            var l = this.$link(rel);
-            if (l === null) {
-              return null; // TODO: Return a resource w/ an error?s
-            }
-
-            return l.follow(options);
-          }
-
-          var ret = new Resource();
-          ret.$promise =
-              this.$promise.then(function(r) {
-                return r.$followOne(rel, options).$promise;
-              }).then(function(r) {
-                var promise = ret.$promise;
-                angular.copy(r, ret);
-                ret.$promise = promise;
-                return ret;
-              });
-
-          return ret;
-        };
-
-        this.$followAll = function(rel, options) {
-          if (this.$resolved) {
-            var subs = this.$subs(rel);
-            if (subs.length > 0) {
-              return subs;
-            }
-
-            return hrLinkCollection.fromArray(this.$links(rel)).follow(options);
-          }
-
-          var ret = [];
-          ret.$resolved = false;
-          var d = $q.defer();
-          ret.$promise = d.promise;
-          ret.$error = null;
-
-          this.$promise.then(function(r) {
-            var resources = r.$followAll(rel);
-            Array.prototype.push.apply(ret, resources);
-            return resources.$promise;
-          }).then(function(r) {
-            d.resolve(ret);
-            ret.$resolved = true;
-          }, function(err) {
-            d.reject(err);
-            ret.$resolved = true;
-            ret.$error = err;
-          });
-
-          return ret;
-        };
+    var Resource = (function (_Resource) {
+      var _ResourceWrapper = function Resource() {
+        return _Resource.apply(this, arguments);
       };
 
-      Resource.prototype.$subs = function(rel) {
-        if (!this.$$embedded.hasOwnProperty(rel)) {
-          return [];
-        }
-
-        return this.$$embedded[rel];
+      _ResourceWrapper.toString = function () {
+        return _Resource.toString();
       };
 
+      return _ResourceWrapper;
+    })(function () {
+      this.$resolved = false;
+      this.$error = null;
+      this.$$links = {};
+      this.$$embedded = {};
 
-      Resource.prototype.$sub = function(rel) {
-        var ret = this.$subs(rel);
+      this.$link = function (rel) {
+        var ret = this.$links(rel);
         if (ret.length === 0) {
           return null;
         }
         if (ret.length > 1) {
-          throw 'Multiple sub-resources present';
+          throw "Multiple links present";
         }
 
         return ret[0];
       };
 
-      Resource.prototype.$embedded = Resource.prototype.$sub;
-      Resource.prototype.$embeddeds = Resource.prototype.$subs;
+      this.$links = function (rel) {
+        if (!this.$$links.hasOwnProperty(rel)) {
+          return [];
+        }
 
-      Resource.prototype.$has = function(rel) {
-        return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
+        return this.$$links[rel];
       };
 
-      Resource.prototype.$$resolve = function(data, headers) {
-        angular.forEach(exts, function(e) {
-          if (!e.applies(data, headers)) {
-            return;
+      this.$followOne = function (rel, options) {
+        if (this.$resolved) {
+          var res = this.$sub(rel);
+          if (res !== null) {
+            return res;
           }
 
-          angular.extend(this, e.dataParser(data, headers));
+          var l = this.$link(rel);
+          if (l === null) {
+            return null; // TODO: Return a resource w/ an error?s
+          }
 
-          angular.extend(this.$$links, e.linkParser(data, headers, Resource));
-          angular.forEach(e.embeddedParser(data, headers, Resource), function(raw, rel) {
-            if (angular.isArray(raw)) {
-              var embeds = raw.map(function(e) { return Resource.embedded(e, headers); });
+          return l.follow(options);
+        }
 
-              embeds.$promise = $q.when(embeds);
-              embeds.$resolved = true;
-              this.$$embedded[rel] = embeds;
-            } else {
-              this.$$embedded[rel] = Resource.embedded(raw, headers);
-            }
-          }, this);
-        }, this);
-
-        this.$resolved = true;
-      };
-
-      Resource.embedded = function(raw, headers) {
         var ret = new Resource();
-        ret.$$resolve(raw, headers);
-        var deferred = $q.defer();
-        ret.$promise = deferred.promise;
-        deferred.resolve(ret);
+        ret.$promise = this.$promise.then(function (r) {
+          return r.$followOne(rel, options).$promise;
+        }).then(function (r) {
+          var promise = ret.$promise;
+          angular.copy(r, ret);
+          ret.$promise = promise;
+          return ret;
+        });
+
         return ret;
       };
 
-      Resource.fromRequest = function(request) {
-        var res = new Resource();
-        res.$promise =
-          request.then(function(response) {
-              res.$$resolve(response.data, response.headers);
-              return res;
-            }, function(response) {
-              // TODO: What to do for failure case?
+      this.$followAll = function (rel, options) {
+        if (this.$resolved) {
+          var subs = this.$subs(rel);
+          if (subs.length > 0) {
+            return subs;
+          }
+
+          return hrLinkCollection.fromArray(this.$links(rel)).follow(options);
+        }
+
+        var ret = [];
+        ret.$resolved = false;
+        var d = $q.defer();
+        ret.$promise = d.promise;
+        ret.$error = null;
+
+        this.$promise.then(function (r) {
+          var resources = r.$followAll(rel);
+          Array.prototype.push.apply(ret, resources);
+          return resources.$promise;
+        }).then(function (r) {
+          d.resolve(ret);
+          ret.$resolved = true;
+        }, function (err) {
+          d.reject(err);
+          ret.$resolved = true;
+          ret.$error = err;
+        });
+
+        return ret;
+      };
+    });
+
+    Resource.prototype.$subs = function (rel) {
+      if (!this.$$embedded.hasOwnProperty(rel)) {
+        return [];
+      }
+
+      return this.$$embedded[rel];
+    };
+
+    Resource.prototype.$sub = function (rel) {
+      var ret = this.$subs(rel);
+      if (ret.length === 0) {
+        return null;
+      }
+      if (ret.length > 1) {
+        throw "Multiple sub-resources present";
+      }
+
+      return ret[0];
+    };
+
+    Resource.prototype.$embedded = Resource.prototype.$sub;
+    Resource.prototype.$embeddeds = Resource.prototype.$subs;
+
+    Resource.prototype.$has = function (rel) {
+      return this.$links(rel).length > 0 || this.$subs(rel).length > 0;
+    };
+
+    Resource.prototype.$$resolve = function (data, headers) {
+      angular.forEach(exts, function (e) {
+        if (!e.applies(data, headers)) {
+          return;
+        }
+
+        angular.extend(this, e.dataParser(data, headers));
+
+        angular.extend(this.$$links, e.linkParser(data, headers, Resource));
+        angular.forEach(e.embeddedParser(data, headers, Resource), function (raw, rel) {
+          if (angular.isArray(raw)) {
+            var embeds = raw.map(function (e) {
+              return Resource.embedded(e, headers);
             });
 
-        return res;
-      };
+            embeds.$promise = $q.when(embeds);
+            embeds.$resolved = true;
+            this.$$embedded[rel] = embeds;
+          } else {
+            this.$$embedded[rel] = Resource.embedded(raw, headers);
+          }
+        }, this);
+      }, this);
 
-      return Resource;
-    }];
-  }).factory('hrRoot', ['hrWebLink', 'hrResource', '$http', function(hrWebLink, hrResource, $http) {
-    return function(url, options) {
-      return {
-        follow: function() {
-          return new hrWebLink({ href: url }, $http, hrResource).follow(options);
-        }
-      };
+      this.$resolved = true;
     };
-  }]);
+
+    Resource.embedded = function (raw, headers) {
+      var ret = new Resource();
+      ret.$$resolve(raw, headers);
+      var deferred = $q.defer();
+      ret.$promise = deferred.promise;
+      deferred.resolve(ret);
+      return ret;
+    };
+
+    Resource.fromRequest = function (request) {
+      var res = new Resource();
+      res.$promise = request.then(function (response) {
+        res.$$resolve(response.data, response.headers);
+        return res;
+      }, function (response) {});
+
+      return res;
+    };
+
+    return Resource;
+  }];
+}).factory("hrRoot", ["hrWebLink", "hrResource", "$http", function (hrWebLink, hrResource, $http) {
+  return function (url, options) {
+    return {
+      follow: function follow() {
+        return new hrWebLink({ href: url }, $http, hrResource).follow(options);
+      }
+    };
+  };
+}]);
+
+// TODO: What to do for failure case?
