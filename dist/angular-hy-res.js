@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.9 - 2014-12-12
+ * @version v0.0.9 - 2015-03-05
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -262,8 +262,10 @@ angular.module('angular-hy-res', [])
     }];
   }).factory('hrRoot', ['hrWebLink', 'hrResource', '$http', function(hrWebLink, hrResource, $http) {
     return function(url, options) {
-      this.follow = function() {
-        return new hrWebLink({ href: url }, $http, hrResource).follow(options);
+      return {
+        follow: function() {
+          return new hrWebLink({ href: url }, $http, hrResource).follow(options);
+        }
       };
     };
   }]);
