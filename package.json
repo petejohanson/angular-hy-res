@@ -1,6 +1,6 @@
 {
   "name": "angular-hy-res",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Hypermedia client for AngularJS inspired by $resource",
   "keywords": [
     "angular",
