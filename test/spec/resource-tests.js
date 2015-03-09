@@ -74,8 +74,8 @@ describe('Module: angular-hy-res', function () {
 
       httpBackend
         .expectGET('/orders/123')
-        .respond(raw,{'content-type': 'application/hal+json'});
-      resource = new hrResource('/orders/123').follow();
+        .respond(raw,{'Content-Type': 'application/hal+json'});
+      resource = hrResource('/orders/123').follow();
       context.resource = resource;
       context.rootScope = rootScope;
     });

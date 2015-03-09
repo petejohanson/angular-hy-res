@@ -13,6 +13,7 @@ var gulp = require('gulp'),
   ngAnnotate = require('gulp-ng-annotate'),
   gwebpack = require('gulp-webpack'),
   webpack = require('webpack'),
+  babel = require('gulp-babel'),
   jshint = require('gulp-jshint'),
   karma = require('gulp-karma'),
   rename = require('gulp-rename'),
@@ -37,6 +38,7 @@ function jsSourcePipe() {
 
 function getOutputPipe(pkg) {
   return lazypipe()
+    .pipe(babel)
     .pipe(header, banner, { pkg: pkg, now: (util.date(new Date(), 'yyyy-mm-dd')) })
     .pipe(gulp.dest, 'dist')
     .pipe(rename, { suffix: '.min' })

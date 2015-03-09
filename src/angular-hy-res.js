@@ -18,9 +18,12 @@ angular.module('angular-hy-res', [])
       angular.forEach(this.extensions, function(val) {
         exts.push($injector.get(val));
       });
+
       return function(url, options) {
-        this.follow = function() {
-          return new HyRes.Root(url, hrHttp, exts).follow(options);
+        return {
+          follow: function() {
+            return new HyRes.Root(url, hrHttp, exts).follow(options);
+          }
         };
       };
     };

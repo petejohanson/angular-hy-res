@@ -1,34 +1,35 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.9 - 2015-01-26
+ * @version v0.0.11 - 2015-03-09
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-'use strict';
+"use strict";
 
-var HyRes = require('hy-res');
+var HyRes = require("hy-res");
 
-angular.module('angular-hy-res', [])
-  .factory('hrHttp', ['$http', function($http) {
-    return function(options) {
-      return $http(options).then(function(resp) {
-        resp.headers = resp.headers();
-        return resp;
-      });
-    };
-  }])
-  .provider('hrRoot', function() {
-    this.extensions = [];
-    this.$get = ['hrHttp', '$injector', function(hrHttp, $injector) {
-      var exts = [];
-      angular.forEach(this.extensions, function(val) {
-        exts.push($injector.get(val));
-      });
-      return function(url, options) {
-        this.follow = function() {
+angular.module("angular-hy-res", []).factory("hrHttp", ["$http", function ($http) {
+  return function (options) {
+    return $http(options).then(function (resp) {
+      resp.headers = resp.headers();
+      return resp;
+    });
+  };
+}]).provider("hrRoot", function () {
+  this.extensions = [];
+  this.$get = ["hrHttp", "$injector", function (hrHttp, $injector) {
+    var exts = [];
+    angular.forEach(this.extensions, function (val) {
+      exts.push($injector.get(val));
+    });
+
+    return function (url, options) {
+      return {
+        follow: function follow() {
           return new HyRes.Root(url, hrHttp, exts).follow(options);
-        };
+        }
       };
-    }];
-  });
+    };
+  }];
+});

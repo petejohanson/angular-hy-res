@@ -1,18 +1,16 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.9 - 2015-01-26
+ * @version v0.0.11 - 2015-03-09
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
-'use strict';
+"use strict";
 
-var Json = require('hy-res').JsonExtension;
+var Json = require("hy-res").JsonExtension;
 
-angular.module('angular-hy-res-json', ['angular-hy-res'])
-  .service('hrJsonExtension', function() {
-    return new Json();
-  }).config(['hrRootProvider', function(hrRootProvider) {
-    hrRootProvider.extensions.push('hrJsonExtension');
-  }]);
-
+angular.module("angular-hy-res-json", ["angular-hy-res"]).service("hrJsonExtension", function () {
+  return new Json();
+}).config(["hrRootProvider", function (hrRootProvider) {
+  hrRootProvider.extensions.push("hrJsonExtension");
+}]);
