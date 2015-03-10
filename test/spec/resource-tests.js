@@ -6,9 +6,11 @@ require('es6-promise').polyfill();
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
+//var chaiResource = require('../resource');
 
 var should = chai.should();
 chai.use(chaiAsPromised);
+//chai.use(chaiResource);
 
 var resourceAssertions = require('../resource-assertions');
 
@@ -85,7 +87,6 @@ describe('Module: angular-hy-res', function () {
     describe('a resolved resource', function() {
       beforeEach(function () {
         httpBackend.flush();
-
       });
 
       resourceAssertions.resolvedResourceBehavior(context);
@@ -258,8 +259,8 @@ describe('Module: angular-hy-res', function () {
           });
 
           it('is an array of unresolved resources', function() {
-            for (var s in stores) {
-              context.resource = s;
+            for (var i = 0; i < stores.length; i++) {
+              context.resource = stores[i];
               resourceAssertions.unresolvedResourceBehavior(context);
             }
           });
