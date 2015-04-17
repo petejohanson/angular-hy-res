@@ -19,12 +19,8 @@ angular.module('angular-hy-res', [])
         exts.push($injector.get(val));
       });
 
-      return function(url, options) {
-        return {
-          follow: function() {
-            return new HyRes.Root(url, hrHttp, exts).follow(options);
-          }
-        };
+      return function(url) {
+        return new HyRes.Root(url, hrHttp, exts);
       };
     };
   });
