@@ -15,7 +15,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
     var hrSirenExtension;
 
     // load the controller's module
-    beforeEach(angular.mock.module('angular-hy-res-siren'));
+    beforeEach(angular.mock.module('hrSiren'));
 
     beforeEach(angular.mock.inject(function(_hrSirenExtension_) {
       hrSirenExtension = _hrSirenExtension_;
@@ -116,7 +116,7 @@ describe('angular-hy-res: hrSirenExtension', function () {
 
   describe('the provider', function() {
     it('handles additional media types', function() {
-      angular.mock.module('angular-hy-res-siren', function(hrSirenExtensionProvider) {
+      angular.mock.module('hrSiren', function(hrSirenExtensionProvider) {
         hrSirenExtensionProvider.mediaTypes.push('application/vnd.myco.blog');
       });
 

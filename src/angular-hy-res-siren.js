@@ -2,7 +2,7 @@
 
 var Siren = require('hy-res').SirenExtension;
 
-angular.module('angular-hy-res-siren', ['angular-hy-res'])
+angular.module('hrSiren', ['hrCore'])
   .provider('hrSirenExtension', function() {
     this.mediaTypes = [];
     this.$get = function() {

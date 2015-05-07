@@ -2,7 +2,7 @@
 
 var Hal = require('hy-res').HalExtension;
 
-angular.module('angular-hy-res-hal', ['angular-hy-res'])
+angular.module('hrHal', ['hrCore'])
   .provider('hrHalExtension', function() {
     this.mediaTypes = [];
     this.$get = function() {

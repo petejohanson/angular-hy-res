@@ -12,8 +12,8 @@ describe('angular-hy-res: hrJsonExtension', function () {
   var hrJsonExtension;
 
   // load the controller's module
-  beforeEach(angular.mock.module('angular-hy-res'));
-  beforeEach(angular.mock.module('angular-hy-res-json'));
+  beforeEach(angular.mock.module('hrCore'));
+  beforeEach(angular.mock.module('hrJson'));
 
   beforeEach(angular.mock.inject(function(_hrJsonExtension_) {
     hrJsonExtension = _hrJsonExtension_;

@@ -2,7 +2,7 @@
 
 var LinkHeader = require('hy-res').LinkHeaderExtension;
 
-angular.module('angular-hy-res-link-header', ['angular-hy-res'])
+angular.module('hrLinkHeader', ['hrCore'])
   .service('hrLinkHeaderExtension', function() {
     return new LinkHeader();
   })

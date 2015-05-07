@@ -6,8 +6,8 @@ describe('angular-hy-res: hrLinkHeaderExtension', function () {
   var hrLinkHeaderExtension;
 
   // load the controller's module
-  beforeEach(angular.mock.module('angular-hy-res'));
-  beforeEach(angular.mock.module('angular-hy-res-link-header'));
+  beforeEach(angular.mock.module('hrCore'));
+  beforeEach(angular.mock.module('hrLinkHeader'));
 
   beforeEach(angular.mock.inject(function(_hrLinkHeaderExtension_, hrHttp) {
     hrLinkHeaderExtension = _hrLinkHeaderExtension_;

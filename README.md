@@ -35,24 +35,24 @@ In your web page:
 angular-hy-res offers an alternative to the built in AngularJS `$resource` service that focuses on using hypermedia
 controls, links (and/or embedded resources) discovered by link relation, to traverse a hypermedia enabled API.
 
-The core of angular-hy-res is found in the `angular-hy-res` AngularJs module. To enable it, add that module to your own
+The core of angular-hy-res is found in the `hrCore` AngularJs module. To enable it, add that module to your own
 module definition. In addition, if you want to use the HAL, Siren, or Link header integration, you must include the
-`angular-hy-res-hal`, `angular-hy-res-siren`, or `angular-hy-res-link-header` modules:
+`hrHal`, `hrSiren`, or `hrLinkHeader` modules:
 
 ```javascript
 angular.module('myApp', [
-    'angular-hy-res',
-    'angular-hy-res-hal',
-    'angular-hy-res-siren',
-    'angular-hy-res-link-header',
-    'angular-hy-res-json'
+    'hrCore',
+    'hrHal',
+    'hrSiren',
+    'hrLinkHeader',
+    'hrJson'
   ]);
 ```
 
-The `angular-hy-res-json` module handles data for simple `application/json` responses, with no additional
+The `hrJson` module handles data for simple `application/json` responses, with no additional
 hypermedia controls present.
 
-_In the future, integration with other hypermedia formats, e.g. Siren, Uber, JSON-LD, will be available in their own modules._
+_In the future, integration with other hypermedia formats, e.g. Collection+JSON, Uber, JSON-LD, will be available in their own modules._
 
 ### hrRoot
 
@@ -255,7 +255,7 @@ By default, the HAL extension will only process links an embedded resources in r
 it with with the `hrHalExtensionProvider` in the `mediaTypes` array:
 
 ```javascript
-angular.module('myModule', ['angular-hy-res-hal'])
+angular.module('myModule', ['hrHal'])
   .config(function(hrHalExtensionProvider) {
     hrHalExtensionProvider.mediaTypes.push('application/vnd.myco.mytype');
   });
@@ -268,7 +268,7 @@ By default, the Siren extension will only process links an embedded resources in
 it with with the `hrSirenExtensionProvider` in the `mediaTypes` array:
 
 ```javascript
-angular.module('myModule', ['angular-hy-res-siren'])
+angular.module('myModule', ['hrSiren'])
   .config(function(hrSirenExtensionProvider) {
     hrSirenExtensionProvider.mediaTypes.push('application/vnd.myco.mytype');
   });

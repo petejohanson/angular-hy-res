@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.16 - 2015-05-01
+ * @version v0.0.16 - 2015-05-07
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -9,7 +9,7 @@
 
 var Siren = require("hy-res").SirenExtension;
 
-angular.module("angular-hy-res-siren", ["angular-hy-res"]).provider("hrSirenExtension", function () {
+angular.module("hrSiren", ["hrCore"]).provider("hrSirenExtension", function () {
   this.mediaTypes = [];
   this.$get = function () {
     return new Siren(this.mediaTypes);

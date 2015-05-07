@@ -2,7 +2,7 @@
 
 var Json = require('hy-res').JsonExtension;
 
-angular.module('angular-hy-res-json', ['angular-hy-res'])
+angular.module('hrJson', ['hrCore'])
   .service('hrJsonExtension', function() {
     return new Json();
   }).config(['hrRootProvider', function(hrRootProvider) {

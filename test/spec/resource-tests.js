@@ -6,11 +6,9 @@ require('es6-promise').polyfill();
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
-//var chaiResource = require('../resource');
 
 var should = chai.should();
 chai.use(chaiAsPromised);
-//chai.use(chaiResource);
 
 var resourceAssertions = require('../resource-assertions');
 
@@ -18,8 +16,8 @@ describe('Module: angular-hy-res', function () {
   var hrResource, httpBackend, rootScope;
 
   // load the controller's module
-  beforeEach(angular.mock.module('angular-hy-res'));
-  beforeEach(angular.mock.module('angular-hy-res-hal'));
+  beforeEach(angular.mock.module('hrCore'));
+  beforeEach(angular.mock.module('hrHal'));
 
   beforeEach(angular.mock.inject(function(_hrRoot_, $httpBackend, $rootScope) {
     hrResource = _hrRoot_;

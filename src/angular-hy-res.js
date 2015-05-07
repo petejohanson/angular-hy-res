@@ -2,7 +2,7 @@
 
 var HyRes = require('hy-res');
 
-angular.module('angular-hy-res', [])
+angular.module('hrCore', [])
   .factory('hrHttp', function($http) {
     return function(options) {
       return $http(options).then(function(resp) {
