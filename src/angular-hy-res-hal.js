@@ -1,5 +1,6 @@
 'use strict';
 
+var angular = require('angular');
 var Hal = require('hy-res').HalExtension;
 
 angular.module('hrHal', ['hrCore'])

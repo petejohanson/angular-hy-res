@@ -11,11 +11,7 @@
   ],
   "ignore": [],
   "dependencies": {
-    "uri.js": "~1.13.2",
-    "angular": "latest"
   },
   "devDependencies": {
-    "angular-mocks": "latest",
-    "jquery": "latest"
   }
 }

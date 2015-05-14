@@ -1,5 +1,6 @@
 'use strict';
 
+var angular = require('angular');
 var HyRes = require('hy-res');
 
 angular.module('hrCore', [])

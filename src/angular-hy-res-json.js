@@ -1,5 +1,6 @@
 'use strict';
 
+var angular = require('angular');
 var Json = require('hy-res').JsonExtension;
 
 angular.module('hrJson', ['hrCore'])

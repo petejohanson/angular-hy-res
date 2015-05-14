@@ -1,5 +1,6 @@
 'use strict';
 
+var angular = require('angular');
 var Siren = require('hy-res').SirenExtension;
 
 angular.module('hrSiren', ['hrCore'])

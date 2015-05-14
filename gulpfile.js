@@ -66,6 +66,9 @@ gulp.task('js-full', ['jshint'], function () {
         library: 'hrRoot',
         filename: 'angular-hy-res-full.js',
         libraryTarget: 'var'
+      },
+      externals: {
+        'angular': 'angular'
       }
     }))
     .pipe(getOutputPipe(require('./package.json'))());

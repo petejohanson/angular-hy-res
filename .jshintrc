@@ -20,6 +20,5 @@
   "trailing": true,
   "smarttabs": true,
   "predef": [
-    "angular"
   ]
 }
