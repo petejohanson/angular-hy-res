@@ -1,5 +1,7 @@
 'use strict';
 
+/*jshint expr: true*/
+
 var HyRes = require('hy-res');
 
 module.exports = function(chai, utils) {
