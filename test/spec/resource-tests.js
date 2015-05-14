@@ -6,11 +6,11 @@ require('es6-promise').polyfill();
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
+var chaiResources = require('../chai-resources');
 
 var should = chai.should();
+chai.use(chaiResources);
 chai.use(chaiAsPromised);
-
-var resourceAssertions = require('../resource-assertions');
 
 describe('Module: angular-hy-res', function () {
   var hrResource, httpBackend, rootScope;
@@ -26,7 +26,6 @@ describe('Module: angular-hy-res', function () {
   }));
 
   describe('an unresolved root resource', function() {
-    var context = {};
     var resource;
 
     beforeEach(function() {
@@ -76,18 +75,20 @@ describe('Module: angular-hy-res', function () {
         .expectGET('/orders/123')
         .respond(raw,{'Content-Type': 'application/hal+json'});
       resource = hrResource('/orders/123').follow();
-      context.resource = resource;
-      context.rootScope = rootScope;
     });
 
-    resourceAssertions.unresolvedResourceBehavior(context);
+    it('should be an unresolved resource', function() {
+      resource.should.be.an.unresolved.resource;
+    });
 
     describe('a resolved resource', function() {
       beforeEach(function () {
         httpBackend.flush();
       });
 
-      resourceAssertions.resolvedResourceBehavior(context);
+      it('should be an resolved resource', function() {
+        resource.should.be.a.resolved.resource;
+      });
 
       it('should contain the parsed properties', function () {
         resource.$promise.should.eventually.have.property('type', 'promo');
@@ -142,10 +143,11 @@ describe('Module: angular-hy-res', function () {
         var payment;
         beforeEach(function () {
           payment = resource.$sub('payment');
-          context.resource = payment;
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('should be an resolved resource', function() {
+          resource.should.be.a.resolved.resource;
+        });
 
         it('should not be null', function () {
           payment.should.not.be.null;
@@ -160,7 +162,6 @@ describe('Module: angular-hy-res', function () {
         var discounts;
         beforeEach(function () {
           discounts = resource.$subs('discounts');
-          context.resource = discounts;
         });
 
         it('should contain two resources', function () {
@@ -168,9 +169,8 @@ describe('Module: angular-hy-res', function () {
         });
 
         it('should contain resolved resources', function () {
-          for (var r in discounts) {
-            context.resource = r;
-            resourceAssertions.resolvedResourceBehavior(context);
+          for (var i = 0; i < discounts.length; i++) {
+            discounts[i].should.be.a.resolved.resource;
           }
         });
 
@@ -200,17 +200,20 @@ describe('Module: angular-hy-res', function () {
               .expectGET('/customers/321')
               .respond(raw, {'content-type': 'application/hal+json'});
             customerResource = resource.$followOne('customer');
-            context.resource = customerResource;
           });
 
-          resourceAssertions.unresolvedResourceBehavior(context);
+          it('should be an unresolved resource', function() {
+            customerResource.should.be.an.unresolved.resource;
+          });
 
           describe('and then resolved', function () {
             beforeEach(function () {
               httpBackend.flush();
             });
 
-            resourceAssertions.resolvedResourceBehavior(context);
+            it('should be an resolved resource', function() {
+              resource.should.be.a.resolved.resource;
+            });
 
             it('should have the raw properties', function () {
               customerResource.$promise.should.eventually.have.property('name', 'John Wayne');
@@ -223,10 +226,11 @@ describe('Module: angular-hy-res', function () {
 
           beforeEach(function() {
             shippingResource = resource.$followOne('shipping-address');
-            context.resource = shippingResource;
           });
 
-          resourceAssertions.resolvedResourceBehavior(context);
+          it('should be an resolved resource', function() {
+            resource.should.be.a.resolved.resource;
+          });
 
           it ('should have the embedded resource properties', function() {
             shippingResource.street1.should.eql('123 Wilkes Lane');
@@ -258,8 +262,7 @@ describe('Module: angular-hy-res', function () {
 
           it('is an array of unresolved resources', function() {
             for (var i = 0; i < stores.length; i++) {
-              context.resource = stores[i];
-              resourceAssertions.unresolvedResourceBehavior(context);
+              stores[i].should.be.an.unresolved.resource;
             }
           });
 
@@ -299,17 +302,20 @@ describe('Module: angular-hy-res', function () {
             .respond(raw,{'content-type': 'application/hal+json'});
           var link = resource.$link('customer');
           customerResource = link.follow();
-          context.resource = customerResource;
         });
 
-        resourceAssertions.unresolvedResourceBehavior(context);
+        it('should be an unresolved resource', function() {
+          customerResource.should.be.an.unresolved.resource;
+        });
 
         describe('and then resolved', function() {
           beforeEach(function() {
             httpBackend.flush();
           });
 
-          resourceAssertions.resolvedResourceBehavior(context);
+          it('should be an resolved resource', function() {
+            customerResource.should.be.a.resolved.resource;
+          });
 
           it('should have the raw properties', function() {
             customerResource.$promise.should.eventually.have.property('name', 'John Wayne');
@@ -332,17 +338,20 @@ describe('Module: angular-hy-res', function () {
             .expectGET('/customers/666')
             .respond(raw,{'content-type': 'application/hal+json'});
           customerResource = resource.$followOne('customer-search', { data: { id: '666' } });
-          context.resource = customerResource;
         });
 
-        resourceAssertions.unresolvedResourceBehavior(context);
+        it('should be an unresolved resource', function() {
+          customerResource.should.be.an.unresolved.resource;
+        });
 
         describe('and then resolved', function() {
           beforeEach(function() {
             httpBackend.flush();
           });
 
-          resourceAssertions.resolvedResourceBehavior(context);
+          it('should be an resolved resource', function() {
+            customerResource.should.be.a.resolved.resource;
+          });
 
           it('should have the raw properties', function() {
             customerResource.$promise.should.eventually.have.property('name', 'Bruce Lee');
@@ -377,17 +386,20 @@ describe('Module: angular-hy-res', function () {
           .respond(rawProfile,{'content-type': 'application/hal+json'});
 
         profileResource = resource.$followOne('customer').$followOne('profile');
-        context.resource = profileResource;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('should be an unresolved resource', function() {
+        profileResource.should.be.an.unresolved.resource;
+      });
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
           httpBackend.flush();
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('should be an resolved resource', function() {
+          profileResource.should.be.a.resolved.resource;
+        });
 
         it('should have the profile location', function() {
           profileResource.$promise.should.eventually.have.property('location', 'Anytown, USA');
@@ -420,17 +432,20 @@ describe('Module: angular-hy-res', function () {
           .respond(rawCustomer,{'content-type': 'application/hal+json'});
 
         profileResource = resource.$followOne('customer').$followOne('profile');
-        context.resource = profileResource;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('should be an unresolved resource', function() {
+        profileResource.should.be.an.unresolved.resource;
+      });
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
           httpBackend.flush();
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('should be an resolved resource', function() {
+          profileResource.should.be.a.resolved.resource;
+        });
 
         it('should have the profile location', function() {
           profileResource.$promise.should.eventually.have.property('location', 'Anytown, USA');
@@ -465,17 +480,20 @@ describe('Module: angular-hy-res', function () {
           .respond(rawProfile,{'content-type': 'application/hal+json'});
 
         profileResources = resource.$followOne('customer').$followAll('profile');
-        context.resource = profileResources;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('should be an unresolved resource', function() {
+        profileResources.should.be.an.unresolved.resource;
+      });
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
           httpBackend.flush();
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('should be an resolved resource', function() {
+          profileResources.should.be.a.resolved.resource;
+        });
 
         it('should have the profile location', function() {
           profileResources.$promise.should.eventually.have.deep.property('[0].location', 'Anytown, USA');
@@ -508,17 +526,20 @@ describe('Module: angular-hy-res', function () {
           .respond(rawCustomer,{'content-type': 'application/hal+json'});
 
         profileResources = resource.$followOne('customer').$followAll('profile');
-        context.resource = profileResources;
       });
 
-      resourceAssertions.unresolvedResourceBehavior(context);
+      it('should be an unresolved resource', function() {
+        profileResources.should.be.an.unresolved.resource;
+      });
 
       describe('when the chain resolves', function() {
         beforeEach(function() {
           httpBackend.flush();
         });
 
-        resourceAssertions.resolvedResourceBehavior(context);
+        it('should be an resolved resource', function() {
+          profileResources.should.be.a.resolved.resource;
+        });
 
         it('should have the profile location', function() {
           profileResources.$promise.should.eventually.have.deep.property('[0].location', 'Anytown, USA');

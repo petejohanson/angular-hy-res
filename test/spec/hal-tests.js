@@ -4,8 +4,10 @@
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
+var chaiResources = require('../chai-resources');
 
 chai.should();
+chai.use(chaiResources);
 chai.use(chaiAsPromised);
 
 describe('angular-hy-res: hrHalExtension', function () {

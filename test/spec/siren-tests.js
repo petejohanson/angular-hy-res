@@ -6,8 +6,10 @@ require('es6-promise').polyfill();
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
+var chaiResources = require('../chai-resources');
 
-var should = chai.should();
+chai.should();
+chai.use(chaiResources);
 chai.use(chaiAsPromised);
 
 describe('angular-hy-res: hrSirenExtension', function () {
