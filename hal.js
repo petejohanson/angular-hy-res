@@ -3,7 +3,7 @@
 var angular = require('angular');
 var Hal = require('hy-res').HalExtension;
 
-angular.module('hrHal', ['hrCore'])
+angular.module('hrHal', [require('./core')])
   .provider('hrHalExtension', function() {
     this.mediaTypes = [];
     this.$get = function() {
@@ -14,3 +14,4 @@ angular.module('hrHal', ['hrCore'])
     hrRootProvider.extensions.push('hrHalExtension');
   }]);
 
+module.exports='hrHal';

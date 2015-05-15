@@ -10,12 +10,14 @@ chai.should();
 chai.use(chaiResources);
 chai.use(chaiAsPromised);
 
+var hrHal = require('../../hal');
+
 describe('angular-hy-res: hrHalExtension', function () {
   describe('the extension', function() {
     var hrHalExtension;
 
     // load the controller's module
-    beforeEach(angular.mock.module('hrHal'));
+    beforeEach(angular.mock.module(hrHal));
 
     beforeEach(angular.mock.inject(function(_hrHalExtension_) {
       hrHalExtension = _hrHalExtension_;
@@ -47,7 +49,7 @@ describe('angular-hy-res: hrHalExtension', function () {
 
   describe('the provider', function() {
     it('handles additional media types', function() {
-      angular.mock.module('hrHal', function(hrHalExtensionProvider) {
+      angular.mock.module(hrHal, function(hrHalExtensionProvider) {
         hrHalExtensionProvider.mediaTypes.push('application/vnd.myco.blog');
       });
 

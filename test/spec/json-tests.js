@@ -10,12 +10,15 @@ chai.should();
 chai.use(chaiResources);
 chai.use(chaiAsPromised);
 
+var hrCore = require('../../core');
+var hrJson = require('../../json');
+
 describe('angular-hy-res: hrJsonExtension', function () {
   var hrJsonExtension;
 
   // load the controller's module
-  beforeEach(angular.mock.module('hrCore'));
-  beforeEach(angular.mock.module('hrJson'));
+  beforeEach(angular.mock.module(hrCore));
+  beforeEach(angular.mock.module(hrJson));
 
   beforeEach(angular.mock.inject(function(_hrJsonExtension_) {
     hrJsonExtension = _hrJsonExtension_;

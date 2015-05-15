@@ -31,7 +31,7 @@ var banner = ['/**',
   ''].join('\n');
 
 function jsSourcePipe() {
-  return gulp.src('src/**/*.js')
+  return gulp.src(['*.js', '!gulpfile.js', '!karma.conf.js'])
     /* jshint camelcase: false */
     .pipe(ngAnnotate({ add: true, single_quotes: true }));
 }

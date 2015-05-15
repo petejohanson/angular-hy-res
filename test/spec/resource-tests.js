@@ -12,12 +12,15 @@ var should = chai.should();
 chai.use(chaiResources);
 chai.use(chaiAsPromised);
 
+var hrCore = require('../../core');
+var hrHal = require('../../hal');
+
 describe('Module: angular-hy-res', function () {
   var hrResource, httpBackend, rootScope;
 
   // load the controller's module
-  beforeEach(angular.mock.module('hrCore'));
-  beforeEach(angular.mock.module('hrHal'));
+  beforeEach(angular.mock.module(hrCore));
+  beforeEach(angular.mock.module(hrHal));
 
   beforeEach(angular.mock.inject(function(_hrRoot_, $httpBackend, $rootScope) {
     hrResource = _hrRoot_;

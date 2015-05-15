@@ -25,3 +25,5 @@ angular.module('hrCore', [])
       };
     };
   });
+
+module.exports = 'hrCore';

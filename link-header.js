@@ -3,7 +3,7 @@
 var angular = require('angular');
 var LinkHeader = require('hy-res').LinkHeaderExtension;
 
-angular.module('hrLinkHeader', ['hrCore'])
+angular.module('hrLinkHeader', [require('./core')])
   .service('hrLinkHeaderExtension', function() {
     return new LinkHeader();
   })
@@ -11,3 +11,4 @@ angular.module('hrLinkHeader', ['hrCore'])
     hrRootProvider.extensions.push('hrLinkHeaderExtension');
   }]);
 
+module.exports='hrLinkHeader';
