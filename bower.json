@@ -11,6 +11,7 @@
   ],
   "ignore": [],
   "dependencies": {
+    "angular": "latest"
   },
   "devDependencies": {
   }
