@@ -8,7 +8,7 @@
   ],
   "homepage": "https://github.com/petejohanson/angular-hy-res",
   "bugs": "https://github.com/petejohanson/angular-hy-res/issues",
-  "main": "index.js"
+  "main": "index.js",
   "author": {
     "name": "Pete Johanson",
     "email": "peter@peterjohanson.com",
