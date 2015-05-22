@@ -21,7 +21,6 @@ describe('angular-hy-res: hrLinkHeaderExtension', function () {
 
   beforeEach(angular.mock.inject(function(_hrLinkHeaderExtension_, hrHttp) {
     hrLinkHeaderExtension = _hrLinkHeaderExtension_;
-    hrLinkHeaderExtension.initialize(hrHttp, [hrLinkHeaderExtension]);
   }));
 
   describe('extension applicability', function() {
