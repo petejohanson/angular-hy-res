@@ -14,6 +14,15 @@ angular-hy-res is available via Bower. To install:
 
     $ bower install --save angular-hy-res
 
+### NPM
+
+angular-hy-res is also published as an node module w/ NPM. To install:
+
+    $ npm install --save angular-hy-res
+
+It is recommended to use it along with [Browserify](http://browserify.org/) or
+[Webpack](https://webpack.github.io/).
+
 _Note: The API is still evolving, so during the 0.0.x series of releases there are no API stability guarantees Those users needed a stable API should set an explicit version in bower.json_
 
 ### Manual
