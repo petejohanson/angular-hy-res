@@ -179,7 +179,7 @@ describe('Module: angular-hy-res', function () {
 
         it('should have a resolved $promise on the array', function () {
           rootScope.$apply();
-          returrn discounts.$promise.should.eventually.eql(discounts);
+          discounts.$promise.should.eventually.eql(discounts);
         });
 
         it('should have a true $resolved property', function () {
