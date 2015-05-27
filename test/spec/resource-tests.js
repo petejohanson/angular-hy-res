@@ -90,7 +90,7 @@ describe('Module: angular-hy-res', function () {
       });
 
       it('should be an resolved resource', function() {
-        resource.should.be.a.resolved.resource;
+        resource.$promise.should.eventually.be.a.resolved.resource;
       });
 
       it('should contain the parsed properties', function () {
@@ -179,7 +179,7 @@ describe('Module: angular-hy-res', function () {
 
         it('should have a resolved $promise on the array', function () {
           rootScope.$apply();
-          discounts.$promise.should.eventually.eql(discounts);
+          returrn discounts.$promise.should.eventually.eql(discounts);
         });
 
         it('should have a true $resolved property', function () {
@@ -401,7 +401,7 @@ describe('Module: angular-hy-res', function () {
         });
 
         it('should be an resolved resource', function() {
-          profileResource.should.be.a.resolved.resource;
+          profileResource.$promise.should.eventually.be.a.resolved.resource;
         });
 
         it('should have the profile location', function() {
@@ -447,7 +447,7 @@ describe('Module: angular-hy-res', function () {
         });
 
         it('should be an resolved resource', function() {
-          profileResource.should.be.a.resolved.resource;
+          profileResource.$promise.should.eventually.be.a.resolved.resource;
         });
 
         it('should have the profile location', function() {
@@ -495,7 +495,7 @@ describe('Module: angular-hy-res', function () {
         });
 
         it('should be an resolved resource', function() {
-          profileResources.should.be.a.resolved.resource;
+          profileResources.$promise.should.eventually.be.a.resolved.resource;
         });
 
         it('should have the profile location', function() {
@@ -541,7 +541,7 @@ describe('Module: angular-hy-res', function () {
         });
 
         it('should be an resolved resource', function() {
-          profileResources.should.be.a.resolved.resource;
+          profileResources.$promise.should.eventually.be.a.resolved.resource;
         });
 
         it('should have the profile location', function() {
