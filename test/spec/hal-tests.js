@@ -4,7 +4,7 @@
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
-var chaiResources = require('../chai-resources');
+var chaiResources = require('chai-hy-res');
 
 chai.should();
 chai.use(chaiResources);

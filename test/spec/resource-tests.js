@@ -6,7 +6,7 @@ require('es6-promise').polyfill();
 
 var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
-var chaiResources = require('../chai-resources');
+var chaiResources = require('chai-hy-res');
 
 var should = chai.should();
 chai.use(chaiResources);
