@@ -69,6 +69,6 @@
     "angular": "1.X"
   },
   "dependencies": {
-    "hy-res": "0.0.11"
+    "hy-res": "0.0.12"
   }
 }
