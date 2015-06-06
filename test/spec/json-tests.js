@@ -33,7 +33,7 @@ describe('angular-hy-res: hrJsonExtension', function () {
   describe('data parser', function() {
     it('should return the data', function() {
       var data = hrJsonExtension.dataParser({ name: 'John Doe' }, {});
-      data.should.eql({ name: 'John Doe' });
+      data.should.eql([{ name: 'name', value: 'John Doe' }]);
     });
   });
 });

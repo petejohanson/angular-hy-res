@@ -12,6 +12,7 @@ chai.should();
 chai.use(chaiResources);
 chai.use(chaiAsPromised);
 
+var HyRes = require('hy-res');
 var hrSiren = require('../../siren');
 
 describe('angular-hy-res: hrSirenExtension', function () {
@@ -25,95 +26,13 @@ describe('angular-hy-res: hrSirenExtension', function () {
       hrSirenExtension = _hrSirenExtension_;
     }));
 
+    xit('should be an instance of the HyRes Siren extension', function() {
+      hrSirenExtension.should.be.an.instanceof(HyRes.SirenExtension);
+    });
+
     describe('extension applicability', function() {
       it('should apply to application/vnd.siren+json content type', function() {
         hrSirenExtension.applies({}, { 'content-type': 'application/vnd.siren+json' }).should.be.true;
-      });
-    });
-    describe('links parser', function() {
-      it('should return the basic link', function() {
-        var links = hrSirenExtension.linkParser({links: [ { rel: ['self'], href: '/orders/123' } ] }, {}, 200);
-        links.self[0].href.should.eql('/orders/123');
-      });
-
-      it('should return link for each relation in rel array', function() {
-        var links = hrSirenExtension.linkParser({links: [ { rel: ['self', 'order'], href: '/orders/123' } ] }, {}, 200);
-        links.self[0].href.should.eql('/orders/123');
-        links.order[0].href.should.eql('/orders/123');
-      });
-
-      it('should return a link array for duplicate link rels', function() {
-        var links = hrSirenExtension.linkParser({
-          links: [
-            { rel: ['self'], href: '/orders/123' },
-            { rel: ['section'], href: '/orders?page=2' },
-            { rel: ['section'], href: '/orders?page=3' }
-          ]
-        },{}, 200);
-        links.section.length.should.eql(2);
-        links.section[0].href.should.eql('/orders?page=2');
-      });
-
-      it('should include sub-entity links', function() {
-        var links = hrSirenExtension.linkParser({
-          links: [
-            { rel: ['self'], href: '/orders/123' }
-          ],
-          entities: [
-            {
-              rel: ['order'],
-              href: '/orders/123'
-            }
-          ]
-        }, {}, 200);
-
-        links.order[0].href.should.eql('/orders/123');
-      });
-    });
-
-    describe('the embedded parser', function() {
-      it('should return the fully embedded entities', function() {
-        var embedded = hrSirenExtension.embeddedParser({
-          entities: [
-            {
-              rel: ['order'],
-              links: [
-                { rel: ['self'], href: '/orders/123' }
-              ],
-              title: 'My Order #123'
-            }
-          ]
-        }, {});
-
-        embedded.order[0].title.should.eql('My Order #123');
-      });
-    });
-
-    describe('data parser', function() {
-      it('should return the properties field values', function() {
-        var data = hrSirenExtension.dataParser({
-          links: [ { rel: ['self'], href: '/orders/123' } ],
-          properties: {
-            name: 'John Doe'
-          }
-        }, {});
-
-        data.should.eql({ name: 'John Doe' });
-      });
-
-      it('should include the title, if present', function() {
-        var data = hrSirenExtension.dataParser({
-          links: [ { rel: ['self'], href: '/orders/123' } ],
-          properties: {
-            name: 'John Doe'
-          },
-          title: 'My Order #123'
-        }, {});
-
-        data.should.eql({
-          name: 'John Doe',
-          title: 'My Order #123'
-        });
       });
     });
   });

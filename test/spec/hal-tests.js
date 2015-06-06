@@ -10,6 +10,7 @@ chai.should();
 chai.use(chaiResources);
 chai.use(chaiAsPromised);
 
+var HyRes = require('hy-res');
 var hrHal = require('../../hal');
 
 describe('angular-hy-res: hrHalExtension', function () {
@@ -23,26 +24,13 @@ describe('angular-hy-res: hrHalExtension', function () {
       hrHalExtension = _hrHalExtension_;
     }));
 
+    xit('should be an instance of the HyRes HAL extension', function() {
+      hrHalExtension.should.be.an.instanceof(HyRes.HalExtension);
+    });
+
     describe('extension applicability', function() {
       it('should apply to application/hal+json content type', function() {
         hrHalExtension.applies({}, { 'content-type': 'application/hal+json' }).should.be.true;
-      });
-    });
-    describe('links parser', function() {
-      it('should return the links', function() {
-        var links = hrHalExtension.linkParser({_links: { self: { href: '/orders/123' } } }, {}, 200);
-        links.self[0].href.should.eql('/orders/123');
-      });
-    });
-
-    describe('data parser', function() {
-      it('should return the properties without _links or _embedded', function() {
-        var data = hrHalExtension.dataParser({
-          _links: { self: { href: '/orders/123' } },
-          name: 'John Doe'
-        }, {});
-
-        data.should.eql({ name: 'John Doe' });
       });
     });
   });
