@@ -139,7 +139,7 @@ paging through the collection, and the `item` relation for each item in the coll
         "self": { "href": "/page/2" },
         "next": { "href": "/page/3" },
         "prev": { "href": "/page/1" }
-    }
+    },
     "_embedded": {
         "item": [
           {
@@ -208,3 +208,8 @@ And the view:
   </ul>
 </div>
 ```
+
+Another complete working example can be found at [pollsApiClient](https://github.com/XVincentX/pollsApiClient),
+which uses most of library features, such as actions, links, pagination, link following and so on. A public copy is deployed to Heroku at:
+
+[https://pollsapiclient.herokuapp.com/](https://pollsapiclient.herokuapp.com/)
