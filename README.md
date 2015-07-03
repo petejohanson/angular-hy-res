@@ -49,12 +49,13 @@ _Note: For more documentation, refer to the full [API documentation](http://pete
 for the core `hy-res` library._
 
 The core of angular-hy-res is found in the `hrCore` AngularJs module. To enable it, add that module to your own
-module definition. In addition, if you want to use the HAL, Siren, or Link header integration, you must include the
-`hrHal`, `hrSiren`, or `hrLinkHeader` modules:
+module definition. In addition, if you want to use the Collection+JSON, HAL, Siren, or Link header integration,
+you must include the `hrCollectionJson`, `hrHal`, `hrSiren`, or `hrLinkHeader` modules:
 
 ```javascript
 angular.module('myApp', [
     'hrCore',
+    'hrCollectionJson',
     'hrHal',
     'hrSiren',
     'hrLinkHeader',
@@ -65,7 +66,7 @@ angular.module('myApp', [
 The `hrJson` module handles data for simple `application/json` responses, with no additional
 hypermedia controls present.
 
-_In the future, integration with other hypermedia formats, e.g. Collection+JSON, Uber, JSON-LD, will be available in their own modules._
+_In the future, integration with other hypermedia formats, e.g. Uber, JSON-LD, will be available in their own modules._
 
 ### hrRoot
 
@@ -91,6 +92,28 @@ _Note: We are using the `$promise` property of a resource to keep the route from
 Returns a `hrWebLink` that can be followed to retrieve the root hy-res `Resource`. See [Resource](http://petejohanson.github.io/hy-res/Resource.html)
 for details on the API available once once you have retrieved the root.
 
+### Collection+JSON Extension
+
+By default, the Collection+JSON extension will only process links an embedded resources in responses if the HTTP response
+`Content-Type` header equals `application/vnd.collection+json`. If you have a custom media type that extends Collection+JSON, you can register
+it with with the `hrCollectionJsonExtensionProvider` in the `mediaTypes` array:
+
+```javascript
+angular.module('myModule', ['hrCollectionJson'])
+  .config(function(hrCollectionJsonExtensionProvider) {
+    hrSirenExtensionProvider.mediaTypes.push('application/vnd.myco.mytype');
+  });
+```
+
+Collection+JSON queries are exposed as forms, and can be accessed using `Resource#$form`
+or `Resource#$forms`. For adding items, a form is accessible using the
+`create-form` IANA standard link relation.
+
+Collection items can be extracted using the `item` standard link relation using
+`Resource#$sub` or `Resource#$subs`.
+
+A given embedded item can be edited by using the form with the `edit-form` standard
+link relation.
 
 ### HAL Extension
 
@@ -105,7 +128,7 @@ angular.module('myModule', ['hrHal'])
   });
 ```
 
-### hrSirenExtension
+### Siren Extension
 
 By default, the Siren extension will only process links an embedded resources in responses if the HTTP response
 `Content-Type` header equals `application/vnd.siren+json`. If you have a custom media type that extends Siren, you can register
@@ -120,8 +143,6 @@ angular.module('myModule', ['hrSiren'])
 
 At this point, the Siren extension includes both the Siren `links` and the sub-entity embedded links in the set
  queried by the `$link` function of `hrResource`.
-
-_Note: At this point, Siren actions are not supported._ 
 
 ## Examples
 
