@@ -8,12 +8,15 @@
 "use strict";
 
 var angular = require("angular");
-var LinkHeader = require("hy-res").LinkHeaderExtension;
+var Hal = require("hy-res").CollectionJsonExtension;
 
-angular.module("hrLinkHeader", [require("./core")]).service("hrLinkHeaderExtension", function () {
-  return new LinkHeader();
+angular.module("hrCollectionJson", [require("./core")]).provider("hrCollectionJsonExtension", function () {
+  this.mediaTypes = [];
+  this.$get = function () {
+    return new Hal(this.mediaTypes);
+  };
 }).config(["hrRootProvider", function (hrRootProvider) {
-  hrRootProvider.extensions.push("hrLinkHeaderExtension");
+  hrRootProvider.extensions.push("hrCollectionJsonExtension");
 }]);
 
-module.exports = "hrLinkHeader";
+module.exports = "hrCollectionJson";
