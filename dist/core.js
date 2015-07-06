@@ -17,7 +17,7 @@ angular.module("hrCore", []).factory("hrHttp", ["$http", function ($http) {
       return resp;
     });
   };
-}]).provider("hrRoot", [function () {
+}]).provider("hrRoot", function () {
   this.extensions = [];
   this.$get = ["hrHttp", "$injector", function (hrHttp, $injector) {
     var exts = [];
@@ -29,6 +29,6 @@ angular.module("hrCore", []).factory("hrHttp", ["$http", function ($http) {
       return new HyRes.Root(url, hrHttp, exts);
     };
   }];
-}]);
+});
 
 module.exports = "hrCore";

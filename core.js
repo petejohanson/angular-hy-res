@@ -12,9 +12,9 @@ angular.module('hrCore', [])
       });
     };
   }])
-  .provider('hrRoot', [function() {
+  .provider('hrRoot', function() {
     this.extensions = [];
-    this.$get = function(hrHttp, $injector) {
+    this.$get = ['hrHttp', '$injector', function(hrHttp, $injector) {
       var exts = [];
       angular.forEach(this.extensions, function(val) {
         exts.push($injector.get(val));
@@ -23,7 +23,7 @@ angular.module('hrCore', [])
       return function(url) {
         return new HyRes.Root(url, hrHttp, exts);
       };
-    };
-  }]);
+    }];
+  });
 
 module.exports = 'hrCore';
