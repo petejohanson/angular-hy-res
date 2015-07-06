@@ -4,15 +4,15 @@ var angular = require('angular');
 var HyRes = require('hy-res');
 
 angular.module('hrCore', [])
-  .factory('hrHttp', function($http) {
+  .factory('hrHttp', ['$http', function($http) {
     return function(options) {
       return $http(options).then(function(resp) {
         resp.headers = resp.headers();
         return resp;
       });
     };
-  })
-  .provider('hrRoot', function() {
+  }])
+  .provider('hrRoot', [function() {
     this.extensions = [];
     this.$get = function(hrHttp, $injector) {
       var exts = [];
@@ -24,6 +24,6 @@ angular.module('hrCore', [])
         return new HyRes.Root(url, hrHttp, exts);
       };
     };
-  });
+  }]);
 
 module.exports = 'hrCore';
