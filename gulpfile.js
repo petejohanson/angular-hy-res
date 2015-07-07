@@ -38,7 +38,7 @@ function jsSourcePipe() {
 
 function getOutputPipe(pkg) {
   return lazypipe()
-    .pipe(babel)
+    .pipe(babel, { compact: false, comments: false })
     .pipe(header, banner, { pkg: pkg, now: (util.date(new Date(), 'yyyy-mm-dd')) })
     .pipe(gulp.dest, 'dist')
     .pipe(rename, { suffix: '.min' })
