@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.25 - 2015-07-07
+ * @version v0.0.25 - 2015-07-09
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -176,7 +176,7 @@ var hrRoot = (function (modules) {
 	var Root = function Root(url, http, extensions, defaultOptions) {
 		var ctx = new Context(http, extensions, defaultOptions);
 
-		WebLink.call(this, { href: url }, ctx.withUrl(url));
+		WebLink.call(this, { href: url }, ctx.forResource({ url: url }));
 	};
 
 	Root.prototype = _.create(WebLink.prototype, {
@@ -206,10 +206,7 @@ var hrRoot = (function (modules) {
 			if (this.type) {
 				opts.headers.Accept = this.type;
 			} else {
-				var accept = _(this.$$context.extensions).pluck("mediaTypes").flatten().compact().join(",");
-				if (accept) {
-					opts.headers.Accept = accept;
-				}
+				opts.headers.Accept = this.$$context.acceptHeader();
 			}
 		}
 
@@ -441,9 +438,12 @@ var hrRoot = (function (modules) {
 	Resource.fromRequest = function (request, context) {
 		var res = new Resource();
 		res.$promise = request.then(function (response) {
-			context = context.withoutUrl();
+			context = context.baseline();
 			if (response.config && response.config.url) {
-				context = context.withUrl(response.config.url);
+				context = context.forResource({
+					url: response.config.url,
+					headers: response.headers
+				});
 			}
 			res.$$resolve(response.data, response.headers, context);
 			return res;
@@ -514,15 +514,7 @@ var hrRoot = (function (modules) {
 		});
 
 		if (!config.headers.Accept) {
-			var mediaTypes = _(this.$$context.extensions).pluck("mediaTypes").flatten().compact();
-			if (this.preferredResponseType) {
-				var preferred = this.preferredResponseType;
-				mediaTypes = mediaTypes.map(function (mt) {
-					return mt === preferred ? mt : mt + ";q=0.5";
-				});
-			}
-			var accept = mediaTypes.join(",");
-			config.headers.Accept = accept;
+			config.headers.Accept = this.$$context.acceptHeader();
 		}
 
 		if (this.fields) {
@@ -542,7 +534,7 @@ var hrRoot = (function (modules) {
 			}
 
 			var loc = r.headers.location;
-			ctx = ctx.withUrl(config.url);
+			ctx = ctx.forResource({ url: config.url });
 			return ctx.http({ method: "GET", url: ctx.resolveUrl(loc), headers: config.headers });
 		});
 		return Resouce.fromRequest(resp, ctx);
@@ -696,8 +688,7 @@ var hrRoot = (function (modules) {
 	var SirenExtension = function SirenExtension(mediaTypes) {
 		var formDefaults = {
 			method: "GET",
-			type: "application/x-www-form-urlencoded",
-			preferredResponseType: "application/vnd.siren+json"
+			type: "application/x-www-form-urlencoded"
 		};
 
 		var mediaTypeSet = { "application/vnd.siren+json": true };
@@ -931,6 +922,7 @@ var hrRoot = (function (modules) {
 		this.http = http;
 		this.extensions = extensions;
 		this.defaultOptions = defaultOptions || {};
+		this.headers = {};
 	};
 
 	Context.prototype.resolveUrl = function (url) {
@@ -940,13 +932,27 @@ var hrRoot = (function (modules) {
 		return url;
 	};
 
-	Context.prototype.withoutUrl = function () {
-		return this.withUrl(undefined);
+	Context.prototype.acceptHeader = function () {
+		var mediaTypes = _(this.extensions).pluck("mediaTypes").flatten().compact();
+		if (this.headers["content-type"]) {
+			var preferred = this.headers["content-type"];
+			mediaTypes = mediaTypes.map(function (mt) {
+				return mt === preferred ? mt : mt + ";q=0.5";
+			});
+		}
+		return mediaTypes.join(",");
 	};
 
-	Context.prototype.withUrl = function (url) {
+	Context.prototype.baseline = function () {
+		return this.forResource(undefined);
+	};
+
+	Context.prototype.forResource = function (resource) {
 		var c = new Context(this.http, this.extensions, this.defaultOptions);
-		c.url = url;
+		resource = resource || {};
+		c.url = resource.url;
+		c.headers = resource.headers || {};
+
 		return c;
 	};
 
