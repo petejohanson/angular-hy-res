@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.26 - 2015-07-09
+ * @version v0.0.26 - 2015-07-23
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -337,20 +337,21 @@ var hrRoot = (function (modules) {
 			var ret = [];
 			ret.$resolved = false;
 			ret.$error = null;
-			var myself = this;
-			ret.$promise = new Promise(function (resolve, reject) {
-				myself.$promise.then(function (r) {
-					var resources = r.$followAll(rel, options);
-					Array.prototype.push.apply(ret, resources);
-					return resources.$promise;
-				}).then(function (r) {
+			ret.$promise = this.$promise.then(function (r) {
+				var resources = r.$followAll(rel, options);
+				Array.prototype.push.apply(ret, resources);
+				return resources.$promise["catch"](function (err) {
 					ret.$resolved = true;
-					resolve(ret);
-				}, function (err) {
-					ret.$resolved = true;
-					ret.$error = err;
-					return Promise.reject(ret);
+					ret.$error = { message: "One or more resources failed to load for $followAll(" + rel + ")", inner: err };
+					throw ret;
 				});
+			}, function (err) {
+				ret.$resolved = true;
+				ret.$error = { message: "Parent resolution failed, unable to $followAll(" + rel + ")", inner: err };
+				throw ret;
+			}).then(function () {
+				ret.$resolved = true;
+				return ret;
 			});
 
 			return ret;
@@ -448,8 +449,8 @@ var hrRoot = (function (modules) {
 			res.$$resolve(response.data, response.headers, context);
 			return res;
 		}, function (response) {
-			res.$$reject(response);
-			return Promise.reject(res);
+			res.$$reject({ message: "HTTP request to load resource failed", inner: response });
+			throw res;
 		});
 
 		return res;
@@ -529,7 +530,7 @@ var hrRoot = (function (modules) {
 
 		var ctx = this.$$context;
 		var resp = ctx.http(config).then(function (r) {
-			if (r.status !== 201) {
+			if (r.status !== 201 || !r.headers.location) {
 				return r;
 			}
 
