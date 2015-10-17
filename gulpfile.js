@@ -68,7 +68,8 @@ gulp.task('js-full', ['jshint'], function () {
         libraryTarget: 'var'
       },
       externals: {
-        'angular': 'angular'
+        'angular': 'angular',
+        'hy-res': 'HyRes'
       }
     }))
     .pipe(getOutputPipe(require('./package.json'))());

@@ -11,7 +11,8 @@
   ],
   "ignore": [],
   "dependencies": {
-    "angular": "latest"
+    "angular": "latest",
+    "hy-res": "petejohanson/hy-res#bower_comp"
   },
   "devDependencies": {}
 }
