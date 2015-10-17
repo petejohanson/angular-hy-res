@@ -12,7 +12,7 @@
   "ignore": [],
   "dependencies": {
     "angular": "latest",
-    "hy-res": "petejohanson/hy-res#bower_comp"
+    "hy-res": "0.0.21"
   },
   "devDependencies": {}
 }
