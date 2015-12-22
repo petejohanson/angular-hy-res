@@ -94,7 +94,7 @@ for details on the API available once once you have retrieved the root.
 
 ### Collection+JSON Extension
 
-By default, the Collection+JSON extension will only process links an embedded resources in responses if the HTTP response
+By default, the Collection+JSON extension will only process links and embedded resources in responses if the HTTP response
 `Content-Type` header equals `application/vnd.collection+json`. If you have a custom media type that extends Collection+JSON, you can register
 it with with the `hrCollectionJsonExtensionProvider` in the `mediaTypes` array:
 
