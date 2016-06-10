@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.30 - 2016-04-25
+ * @version v0.0.30 - 2016-06-10
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -30,13 +30,14 @@ var hrRoot = (function (modules) {
 	__webpack_require__(4);
 	__webpack_require__(5);
 	__webpack_require__(6);
-	module.exports = __webpack_require__(7);
+	__webpack_require__(7);
+	module.exports = __webpack_require__(8);
 }, function (module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var angular = __webpack_require__(8);
-	var Hal = __webpack_require__(9).CollectionJsonExtension;
+	var angular = __webpack_require__(9);
+	var Hal = __webpack_require__(10).CollectionJsonExtension;
 
 	angular.module("hrCollectionJson", [__webpack_require__(2)]).provider("hrCollectionJsonExtension", function () {
 		this.mediaTypes = [];
@@ -52,8 +53,8 @@ var hrRoot = (function (modules) {
 
 	"use strict";
 
-	var angular = __webpack_require__(8);
-	var HyRes = __webpack_require__(9);
+	var angular = __webpack_require__(9);
+	var HyRes = __webpack_require__(10);
 
 	angular.module("hrCore", []).factory("hrHttp", ["$http", function ($http) {
 		return function (options) {
@@ -81,8 +82,8 @@ var hrRoot = (function (modules) {
 
 	"use strict";
 
-	var angular = __webpack_require__(8);
-	var Hal = __webpack_require__(9).HalExtension;
+	var angular = __webpack_require__(9);
+	var Hal = __webpack_require__(10).HalExtension;
 
 	angular.module("hrHal", [__webpack_require__(2)]).provider("hrHalExtension", function () {
 		this.mediaTypes = [];
@@ -98,7 +99,7 @@ var hrRoot = (function (modules) {
 
 	"use strict";
 
-	var angular = __webpack_require__(8);
+	var angular = __webpack_require__(9);
 
 	angular.module("hrHyRes", [__webpack_require__(2), __webpack_require__(3), __webpack_require__(7), __webpack_require__(6), __webpack_require__(5)]);
 
@@ -107,8 +108,8 @@ var hrRoot = (function (modules) {
 
 	"use strict";
 
-	var angular = __webpack_require__(8);
-	var Json = __webpack_require__(9).JsonExtension;
+	var angular = __webpack_require__(9);
+	var Json = __webpack_require__(10).JsonExtension;
 	var hrCore = __webpack_require__(2);
 
 	angular.module("hrJson", [hrCore]).service("hrJsonExtension", function () {
@@ -122,8 +123,8 @@ var hrRoot = (function (modules) {
 
 	"use strict";
 
-	var angular = __webpack_require__(8);
-	var LinkHeader = __webpack_require__(9).LinkHeaderExtension;
+	var angular = __webpack_require__(9);
+	var LinkHeader = __webpack_require__(10).LinkHeaderExtension;
 
 	angular.module("hrLinkHeader", [__webpack_require__(2)]).service("hrLinkHeaderExtension", function () {
 		return new LinkHeader();
@@ -136,8 +137,8 @@ var hrRoot = (function (modules) {
 
 	"use strict";
 
-	var angular = __webpack_require__(8);
-	var Siren = __webpack_require__(9).SirenExtension;
+	var angular = __webpack_require__(9);
+	var Siren = __webpack_require__(10).SirenExtension;
 
 	angular.module("hrSiren", [__webpack_require__(2)]).provider("hrSirenExtension", function () {
 		this.mediaTypes = [];
@@ -149,6 +150,24 @@ var hrRoot = (function (modules) {
 	}]);
 
 	module.exports = "hrSiren";
+}, function (module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var angular = __webpack_require__(9);
+	var Text = __webpack_require__(10).TextExtension;
+
+	angular.module("hrText", [__webpack_require__(2)]).provider("hrTextExtension", function () {
+		this.subTypes = [];
+		this.wildcard = false;
+		this.$get = function () {
+			return new Text({ wildcard: this.wildcard, subTypes: this.subTypes });
+		};
+	}).config(["hrRootProvider", function (hrRootProvider) {
+		hrRootProvider.extensions.push("hrTextExtension");
+	}]);
+
+	module.exports = "hrText";
 }, function (module, exports, __webpack_require__) {
 
 	module.exports = angular;

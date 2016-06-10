@@ -143,6 +143,33 @@ angular.module('myModule', ['hrSiren'])
 
 At this point, the Siren extension includes both the Siren `links` and the sub-entity embedded links in the set
  queried by the `$link` function of `hrResource`.
+ 
+### Text Extension
+ 
+The text extension handles responses with text content types, and exposes the text response
+as a `text` property on the resolved resource. By default, the text extension will only process responses if
+the HTTP response `Content-Type` header equals `text/plain`. If you would like other `text` subtypes to be handled,
+you can register it with with the `hrTextExtensionProvider` in the `subTypes` array:
+ 
+```javascript
+angular.module('myModule', ['hrText'])
+  .config(function(hrTextExtensionProvider) {
+    hrTextExtensionProvider.subTypes.push('rtf');
+  });
+```
+
+Alternately, if you would like the extension to handle *all* text subtypes, the extension can be
+configured to be in 'wildcard' mode:
+
+```javascript
+angular.module('myModule', ['hrText'])
+  .config(function(hrTextExtensionProvider) {
+    hrTextExtensionProvider.wildcard = true;
+  });
+```
+
+By doing so, HTTP requests will include a wildcard in the `Accept` header, e.g. `text/*`,
+and the extension will handle any responses with a `Content-Type` of the `text` primary media type.
 
 ## Examples
 
