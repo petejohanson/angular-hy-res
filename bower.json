@@ -12,7 +12,7 @@
   "ignore": [],
   "dependencies": {
     "angular": "latest",
-    "hy-res": "0.0.25"
+    "hy-res": "0.0.26"
   },
   "devDependencies": {}
 }
