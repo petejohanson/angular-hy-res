@@ -63,7 +63,9 @@ var hrRoot = (function (modules) {
 		};
 
 		return function (options) {
-			return $http(options).then(headersProcessor, headersProcessor);
+			return $http(options).then(headersProcessor, function (resp) {
+				throw headersProcessor(resp);
+			});
 		};
 	}]).provider("hrRoot", function () {
 		this.extensions = [];

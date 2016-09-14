@@ -12,7 +12,7 @@ angular.module('hrCore', [])
 
     return function(options) {
       return $http(options).then(headersProcessor, function(resp) {
-        throw headersProcessor(resp)
+        throw headersProcessor(resp);
       });
     };
   }])

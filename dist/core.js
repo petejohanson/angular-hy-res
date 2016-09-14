@@ -17,7 +17,9 @@ angular.module("hrCore", []).factory("hrHttp", ["$http", function ($http) {
   };
 
   return function (options) {
-    return $http(options).then(headersProcessor, headersProcessor);
+    return $http(options).then(headersProcessor, function (resp) {
+      throw headersProcessor(resp);
+    });
   };
 }]).provider("hrRoot", function () {
   this.extensions = [];
