@@ -11,7 +11,9 @@ angular.module('hrCore', [])
     };
 
     return function(options) {
-      return $http(options).then(headersProcessor, headersProcessor);
+      return $http(options).then(headersProcessor, function(resp) {
+        throw headersProcessor(resp)
+      });
     };
   }])
   .provider('hrRoot', function() {
