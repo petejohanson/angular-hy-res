@@ -5,11 +5,13 @@ var HyRes = require('hy-res');
 
 angular.module('hrCore', [])
   .factory('hrHttp', ['$http', function($http) {
+    var headersProcessor = function(resp) {
+      resp.headers = resp.headers();
+      return resp;
+    };
+
     return function(options) {
-      return $http(options).then(function(resp) {
-        resp.headers = resp.headers();
-        return resp;
-      });
+      return $http(options).then(headersProcessor, headersProcessor);
     };
   }])
   .provider('hrRoot', function() {
