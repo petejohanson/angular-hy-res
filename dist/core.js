@@ -1,6 +1,6 @@
 /**
  * angular-hy-res - Hypermedia client for AngularJS inspired by $resource
- * @version v0.0.32 - 2016-09-13
+ * @version v0.0.33 - 2016-09-14
  * @link https://github.com/petejohanson/angular-hy-res
  * @author Pete Johanson <peter@peterjohanson.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -11,11 +11,13 @@ var angular = require("angular");
 var HyRes = require("hy-res");
 
 angular.module("hrCore", []).factory("hrHttp", ["$http", function ($http) {
+  var headersProcessor = function headersProcessor(resp) {
+    resp.headers = resp.headers();
+    return resp;
+  };
+
   return function (options) {
-    return $http(options).then(function (resp) {
-      resp.headers = resp.headers();
-      return resp;
-    });
+    return $http(options).then(headersProcessor, headersProcessor);
   };
 }]).provider("hrRoot", function () {
   this.extensions = [];
